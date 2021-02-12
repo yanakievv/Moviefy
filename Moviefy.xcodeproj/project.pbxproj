@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D250585525D2EDC600F218CB /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = D250585425D2EDC600F218CB /* Movie.swift */; };
+		D250585825D2EEE100F218CB /* MovieService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D250585725D2EEE100F218CB /* MovieService.swift */; };
+		D250585A25D2F3F600F218CB /* MovieStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D250585925D2F3F600F218CB /* MovieStore.swift */; };
+		D250585E25D2F84900F218CB /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = D250585D25D2F84900F218CB /* Util.swift */; };
 		D2BDADEF25D17F4200525158 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2BDADEE25D17F4200525158 /* AppDelegate.swift */; };
 		D2BDADF125D17F4200525158 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2BDADF025D17F4200525158 /* ViewController.swift */; };
 		D2BDADF425D17F4200525158 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2BDADF225D17F4200525158 /* Main.storyboard */; };
@@ -38,6 +42,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D250585425D2EDC600F218CB /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
+		D250585725D2EEE100F218CB /* MovieService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieService.swift; sourceTree = "<group>"; };
+		D250585925D2F3F600F218CB /* MovieStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieStore.swift; sourceTree = "<group>"; };
+		D250585D25D2F84900F218CB /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		D266E15925D1A3CB00B822E7 /* moviefy_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moviefy_logo.png; sourceTree = "<group>"; };
 		D2BDADEB25D17F4200525158 /* Moviefy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Moviefy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2BDADEE25D17F4200525158 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -83,6 +91,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D250585625D2EEC900F218CB /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				D250585725D2EEE100F218CB /* MovieService.swift */,
+				D250585925D2F3F600F218CB /* MovieStore.swift */,
+				D250585D25D2F84900F218CB /* Util.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		D266E15825D1A3C300B822E7 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -114,6 +132,7 @@
 		D2BDADED25D17F4200525158 /* Moviefy */ = {
 			isa = PBXGroup;
 			children = (
+				D250585625D2EEC900F218CB /* Services */,
 				D266E15825D1A3C300B822E7 /* Resources */,
 				D2BDAE2025D1802B00525158 /* Model */,
 				D2BDAE1F25D1801F00525158 /* ViewControllers */,
@@ -158,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				D2BDAE2125D1803100525158 /* Cells */,
+				D250585425D2EDC600F218CB /* Movie.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -302,11 +322,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D250585525D2EDC600F218CB /* Movie.swift in Sources */,
+				D250585A25D2F3F600F218CB /* MovieStore.swift in Sources */,
 				D2BDAE2325D1805100525158 /* MainTableViewController.swift in Sources */,
 				D2BDADF725D17F4200525158 /* Moviefy.xcdatamodeld in Sources */,
 				D2BDADF125D17F4200525158 /* ViewController.swift in Sources */,
 				D2BDAE2825D1811F00525158 /* MovieCollectionViewCell.swift in Sources */,
 				D2BDADEF25D17F4200525158 /* AppDelegate.swift in Sources */,
+				D250585E25D2F84900F218CB /* Util.swift in Sources */,
+				D250585825D2EEE100F218CB /* MovieService.swift in Sources */,
 				D2BDAE2625D1809400525158 /* MainTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

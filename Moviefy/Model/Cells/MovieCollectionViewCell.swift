@@ -10,4 +10,20 @@ import UIKit
 
 class MovieCollectionViewCell: UICollectionViewCell {
     
+    private var movie: Movie?
+    @IBOutlet var title: UILabel!
+
+    func loadData(from: Movie?) {
+        if let from = from {
+            movie = from
+            self.setProperties()
+        }
+        else {
+            NSLog("W: MovieCollectionViewCell -- loadData from nil")
+        }
+    }
+    
+    func setProperties() {
+        title.text = movie?.title
+    }
 }

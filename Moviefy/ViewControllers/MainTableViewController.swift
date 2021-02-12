@@ -9,37 +9,88 @@
 import UIKit
 
 class MainTableViewController: UITableViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    var popular: MovieResponse?
+    var trending: MovieResponse?
+    var topRated: MovieResponse?
+    var upcoming: MovieResponse?
+    
+    var arrayOfSections = [MovieResponse?]()
+    
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 16
+        if (self.arrayOfSections.count > collectionView.tag && self.arrayOfSections[collectionView.tag] != nil) {
+            return self.arrayOfSections[collectionView.tag]?.results.count ?? 20
+        }
+        return 20
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MovieCollectionViewCell",
-                                                      for: indexPath)
-        (cell as! MovieCollectionViewCell).backgroundColor = UIColor.orange
+                                                      for: indexPath) as! MovieCollectionViewCell
+        cell.backgroundColor = UIColor.orange
+        if (self.arrayOfSections.count > collectionView.tag && self.arrayOfSections[collectionView.tag] != nil) {
+            cell.loadData(from: self.arrayOfSections[collectionView.tag]?.results[indexPath.row] as? Movie)
+        }
+
         return cell
     }
     
+    func fetchData() {
+        MovieStore.interface.getMovies(from: MovieListEndpoint.popular, completion: { response in
+            if let response = response {
+                self.popular = response
+                self.arrayOfSections.append(self.popular)
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        })
+        MovieStore.interface.getMovies(from: MovieListEndpoint.nowPlaying, completion: { response in
+            if let response = response {
+                self.trending = response
+                self.arrayOfSections.append(self.trending)
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        })
+        MovieStore.interface.getMovies(from: MovieListEndpoint.topRated, completion: { response in
+            if let response = response {
+                self.topRated = response
+                self.arrayOfSections.append(self.topRated)
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        })
+        MovieStore.interface.getMovies(from: MovieListEndpoint.upcoming, completion: { response in
+            if let response = response {
+                self.upcoming = response
+                self.arrayOfSections.append(self.upcoming)
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        })
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.fetchData()
+
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
 
-    // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 4
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return 1
     }
 
@@ -51,79 +102,28 @@ class MainTableViewController: UITableViewController, UICollectionViewDelegate, 
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 160; //use this to determine height when loading movie thumbnails
+        return 160;
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
-        // all of this is going to get replaced with enums that are going to be used for the tmdb api, its just a placeholder rn
+        switch (section) {
+        case 0: return "Popular"
+        case 1: return "Trending"
+        case 2: return "Top Rated"
+        case 3: return "Upcoming"
+        default: return "Other"
+        }
         
-        if (section == 0) {
-            return "Popular"
-        }
-        if (section == 1) {
-            return "Trending"
-        }
-        if (section == 2) {
-            return "Top-rated"
-        }
-        if (section == 3) {
-            return "Upcoming"
-        }
-        return "what"
     }
 
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MainTableViewCell", for: indexPath)
-
-        // Configure the cell...
-
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MainTableViewCell", for: indexPath) as! MainTableViewCell
+        cell.loadData(from: arrayOfSections)
         return cell
     }
     
-
-
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return false
     }
- 
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
