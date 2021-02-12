@@ -7,15 +7,16 @@
 //
 
 import Foundation
+import UIKit
 
 class MovieStore: MovieService {
-    
+
     func getMovies(from endpoint: MovieListEndpoint, completion: @escaping (MovieResponse?) -> ()) {
         guard let url = URL(string: "\(baseURL)/movie/\(endpoint.rawValue)") else {
             NSLog("E: MovieStore -- getMovies url error")
             return
         }
-        loadAndDecodeURL(url: url, completion: {(data, urlResponse, error) in
+        loadURL(url: url, completion: {(data, urlResponse, error) in
             if (error != nil) {
                 NSLog("E: MovieStore -- loadAndDecodeURL error != nil")
                 completion(nil)
@@ -45,19 +46,49 @@ class MovieStore: MovieService {
         return
     }
     
+    func getImage(path: String, size: MovieImageSize, completion: @escaping (Data?) -> ()) {
+        guard let url = URL(string: imageBaseURL + size.rawValue + path) else {
+            NSLog("E: MovieStore -- getPoster url error")
+            return
+        }
+        sessionURL.dataTask(with: url) { (data, response, error) in
+            if (error != nil) {
+                NSLog("E: MovieStore -- getPoster dataTask error")
+                completion(nil)
+                return
+            }
+            guard let httpResponse = response as? HTTPURLResponse else {
+                NSLog("E: MovieStore -- getPoster httpResponse error")
+                completion(nil)
+                return
+            }
+            if (httpResponse.statusCode < 200 && httpResponse.statusCode >= 300) {
+                NSLog("E: MovieStore -- getPoster httpResponse <200 >300")
+                completion(nil)
+                return
+            }
+            guard let data = data else {
+                NSLog("E: MovieStore -- getPoster data error")
+                completion(nil)
+                return
+            }
+            completion(data)
+        }.resume()
+    }
     
     static let interface = MovieStore()
     private init() {}
     
     private let APIKey = "258b74537c6968d6d22a734e2994e3ee"
     private let baseURL = "https://api.themoviedb.org/3"
+    private let imageBaseURL = "https://image.tmdb.org/t/p/"
     private let sessionURL = URLSession.shared
     //private let jsonDecoder = Util.jsonDecoder
     
     // The sources that I've checked use some kind of a jsonDecoder, I didn't succeed in making it work so I just parsed the data manually
     // Im still leaving it here for future comments on how to make it work or remove it completely
     
-    private func loadAndDecodeURL(url: URL, params: [String:String]? = nil, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
+    private func loadURL(url: URL, params: [String:String]? = nil, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
         guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             return
         }

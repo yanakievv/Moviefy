@@ -7,11 +7,13 @@
 //
 
 import Foundation
+import UIKit
 
 protocol MovieService {
     func getMovies(from endpoint: MovieListEndpoint, completion: @escaping (MovieResponse?) -> ())
     func getMovie(id: Int, completion: @escaping (Movie?) -> ())
     func searchMovie(query: String, completion: @escaping (MovieResponse?) -> ())
+    func getImage(path: String, size: MovieImageSize, completion: @escaping (Data?) -> ())
 }
 
 enum MovieListEndpoint: String, CaseIterable {
@@ -28,4 +30,11 @@ enum MovieListEndpoint: String, CaseIterable {
         case .popular: return "Popular"
         }
     }
+}
+
+enum MovieImageSize: String {
+    case small = "w92"
+    case medium = "w185"
+    case big = "w500"
+    case original = "original"
 }

@@ -28,7 +28,7 @@ class MainTableViewController: UITableViewController, UICollectionViewDelegate, 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MovieCollectionViewCell",
                                                       for: indexPath) as! MovieCollectionViewCell
-        cell.backgroundColor = UIColor.orange
+
         if (self.arrayOfSections.count > collectionView.tag && self.arrayOfSections[collectionView.tag] != nil) {
             cell.loadData(from: self.arrayOfSections[collectionView.tag]?.results[indexPath.row] as? Movie)
         }

@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-struct Movie {
+class Movie {
     
     let id: Int
     let title: String
@@ -19,8 +19,10 @@ struct Movie {
     let voteAverage: Double
     let voteCount: Int
     
-    /*let backdropImage: UIImage
-    let posterImage: UIImage*/
+    let backdropImage: UIImage? = nil
+    let posterImage: UIImage? = nil
+    
+    var thumbnail: UIImage? = nil
     
     init(id: Int, title: String, backdropPath: String?, posterPath: String?, overview: String, voteAverage: Double, voteCount: Int) {
         self.id = id
@@ -30,6 +32,9 @@ struct Movie {
         self.overview = overview
         self.voteAverage = voteAverage
         self.voteCount = voteCount
+        MovieStore.interface.getImage(path: self.backdropPath ?? "", size: MovieImageSize.small, completion: {img in
+            self.thumbnail = UIImage(data: img!)
+        })
     }
 }
 

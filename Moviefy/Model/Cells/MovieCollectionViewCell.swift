@@ -12,7 +12,8 @@ class MovieCollectionViewCell: UICollectionViewCell {
     
     private var movie: Movie?
     @IBOutlet var title: UILabel!
-
+    @IBOutlet var thumbnailImageView: UIImageView!
+    
     func loadData(from: Movie?) {
         if let from = from {
             movie = from
@@ -25,5 +26,6 @@ class MovieCollectionViewCell: UICollectionViewCell {
     
     func setProperties() {
         title.text = movie?.title
+        thumbnailImageView.image = movie?.thumbnail
     }
 }
