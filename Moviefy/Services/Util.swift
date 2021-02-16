@@ -39,6 +39,6 @@ extension String{
 
 extension NSDictionary {
     func toMovie() -> Movie {
-        return Movie(id: self.value(forKeyPath: MovieKey.id.rawValue) as! Int, title: self.value(forKeyPath: MovieKey.title.rawValue) as! String, backdropPath: self.value(forKeyPath: MovieKey.backdropPath.rawValue) as? String, posterPath: self.value(forKeyPath: MovieKey.posterPath.rawValue) as? String, overview: self.value(forKeyPath: MovieKey.overview.rawValue) as! String, voteAverage: self.value(forKeyPath: MovieKey.voteAverage.rawValue) as! Double, voteCount: self.value(forKeyPath: MovieKey.voteCount.rawValue) as! Int)
+        return Movie(id: self.value(forKeyPath: MovieKey.id.rawValue) as! Int, title: self.value(forKeyPath: MovieKey.title.rawValue) as! String, backdropPath: self.value(forKeyPath: MovieKey.backdropPath.rawValue) as? String, posterPath: self.value(forKeyPath: MovieKey.posterPath.rawValue) as? String, overview: self.value(forKeyPath: MovieKey.overview.rawValue) as! String, voteAverage: self.value(forKeyPath: MovieKey.voteAverage.rawValue) as! Double, voteCount: self.value(forKeyPath: MovieKey.voteCount.rawValue) as! Int, releaseDate: self.value(forKeyPath: MovieKey.releaseDate.rawValue) as! String)
     }
 }

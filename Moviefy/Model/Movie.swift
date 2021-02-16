@@ -18,13 +18,13 @@ class Movie {
     let overview: String
     let voteAverage: Double
     let voteCount: Int
+    let releaseDate: String
     
-    let backdropImage: UIImage? = nil
-    let posterImage: UIImage? = nil
-    
+    var posterImage: UIImage? = nil
+    var backdropImage: UIImage? = nil
     var thumbnail: UIImage? = nil
     
-    init(id: Int, title: String, backdropPath: String?, posterPath: String?, overview: String, voteAverage: Double, voteCount: Int) {
+    init(id: Int, title: String, backdropPath: String?, posterPath: String?, overview: String, voteAverage: Double, voteCount: Int, releaseDate: String) {
         self.id = id
         self.title = title
         self.backdropPath = backdropPath
@@ -32,8 +32,15 @@ class Movie {
         self.overview = overview
         self.voteAverage = voteAverage
         self.voteCount = voteCount
+        self.releaseDate = releaseDate
         MovieStore.interface.getImage(path: self.backdropPath ?? "", size: MovieImageSize.small, completion: {img in
             self.thumbnail = UIImage(data: img!)
+        })
+        MovieStore.interface.getImage(path: self.backdropPath ?? "", size: MovieImageSize.big, completion: {img in
+            self.backdropImage = UIImage(data: img!)
+        })
+        MovieStore.interface.getImage(path: self.posterPath ?? "", size: MovieImageSize.original, completion: {img in
+            self.posterImage = UIImage(data: img!)
         })
     }
 }
@@ -59,6 +66,7 @@ enum MovieKey: String, CaseIterable {
     case overview = "overview"
     case voteAverage = "vote_average"
     case voteCount = "vote_count"
+    case releaseDate = "release_date"
     
 }
 

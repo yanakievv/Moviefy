@@ -36,6 +36,13 @@ class MainTableViewController: UITableViewController, UICollectionViewDelegate, 
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let sender = (collectionView.cellForItem(at: indexPath) as! MovieCollectionViewCell).getMovie()
+        if (sender != nil) {
+            self.performSegue(withIdentifier: "ShowMovieDetails", sender: sender)
+        }
+    }
+    
     func fetchData() {
         MovieStore.interface.getMovies(from: MovieListEndpoint.popular, completion: { response in
             if let response = response {
@@ -125,5 +132,13 @@ class MainTableViewController: UITableViewController, UICollectionViewDelegate, 
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return false
+    }
+        
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if (segue.identifier == "ShowMovieDetails") {
+            if let sender: Movie = sender as? Movie {
+                (segue.destination as! DetailsViewController).prepareData(movie: sender)
+            }
+        }
     }
 }

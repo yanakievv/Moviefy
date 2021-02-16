@@ -11,6 +11,7 @@
 		D250585825D2EEE100F218CB /* MovieService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D250585725D2EEE100F218CB /* MovieService.swift */; };
 		D250585A25D2F3F600F218CB /* MovieStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D250585925D2F3F600F218CB /* MovieStore.swift */; };
 		D250585E25D2F84900F218CB /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = D250585D25D2F84900F218CB /* Util.swift */; };
+		D2593A7525D6D41800B65E1E /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2593A7425D6D41800B65E1E /* DetailsViewController.swift */; };
 		D2BDADEF25D17F4200525158 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2BDADEE25D17F4200525158 /* AppDelegate.swift */; };
 		D2BDADF125D17F4200525158 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2BDADF025D17F4200525158 /* ViewController.swift */; };
 		D2BDADF425D17F4200525158 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2BDADF225D17F4200525158 /* Main.storyboard */; };
@@ -46,6 +47,7 @@
 		D250585725D2EEE100F218CB /* MovieService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieService.swift; sourceTree = "<group>"; };
 		D250585925D2F3F600F218CB /* MovieStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieStore.swift; sourceTree = "<group>"; };
 		D250585D25D2F84900F218CB /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
+		D2593A7425D6D41800B65E1E /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
 		D266E15925D1A3CB00B822E7 /* moviefy_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moviefy_logo.png; sourceTree = "<group>"; };
 		D2BDADEB25D17F4200525158 /* Moviefy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Moviefy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2BDADEE25D17F4200525158 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 			isa = PBXGroup;
 			children = (
 				D2BDAE2225D1805100525158 /* MainTableViewController.swift */,
+				D2593A7425D6D41800B65E1E /* DetailsViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -325,6 +328,7 @@
 				D250585525D2EDC600F218CB /* Movie.swift in Sources */,
 				D250585A25D2F3F600F218CB /* MovieStore.swift in Sources */,
 				D2BDAE2325D1805100525158 /* MainTableViewController.swift in Sources */,
+				D2593A7525D6D41800B65E1E /* DetailsViewController.swift in Sources */,
 				D2BDADF725D17F4200525158 /* Moviefy.xcdatamodeld in Sources */,
 				D2BDADF125D17F4200525158 /* ViewController.swift in Sources */,
 				D2BDAE2825D1811F00525158 /* MovieCollectionViewCell.swift in Sources */,
