@@ -94,11 +94,14 @@ class MainTableViewController: UITableViewController, UICollectionViewDelegate, 
 
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        return 5
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        switch (section) {
+        case 4: return 0
+        default: return 1
+        }
     }
 
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -119,7 +122,7 @@ class MainTableViewController: UITableViewController, UICollectionViewDelegate, 
         case 1: return "Trending"
         case 2: return "Top Rated"
         case 3: return "Upcoming"
-        default: return "Other"
+        default: return "Search"
         }
         
     }

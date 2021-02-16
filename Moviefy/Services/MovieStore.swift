@@ -18,7 +18,7 @@ class MovieStore: MovieService {
         }
         loadURL(url: url, completion: {(data, urlResponse, error) in
             if (error != nil) {
-                NSLog("E: MovieStore -- loadAndDecodeURL error != nil")
+                NSLog("E: MovieStore -- loadURL error != nil")
                 completion(nil)
                 return
             }
@@ -41,8 +41,28 @@ class MovieStore: MovieService {
         return
     }
     
-    func searchMovie(query: String, completion: @escaping (MovieResponse?) -> ()) {
-        //TODO
+    func searchMovie(query: String, page: Int = 1, completion: @escaping (MovieResponse?) -> ()) {
+        guard let url = URL(string: "\(baseURL)/search/movie") else {
+            NSLog("E: MovieStore searchMovie url error")
+            return
+        }
+        loadURL(url: url, params: ["query" : query, "page" : String(page)], completion: {(data, urlResponse, error) in
+            if (error != nil) {
+                NSLog("E: MovieStore -- loadURL error != nil")
+                completion(nil)
+                return
+            }
+            if (data == nil || urlResponse == nil) {
+                NSLog("E: MovieStore -- data/response returned nil")
+                completion(nil)
+                return
+            }
+            let responseString = String(data: data!, encoding: .utf8)!
+            let dict = responseString.toDictionary()
+            let results = dict.value(forKeyPath: "results") as? NSArray
+            let response: MovieResponse = MovieResponse(results: results!)
+            completion(response)
+        })
         return
     }
     
