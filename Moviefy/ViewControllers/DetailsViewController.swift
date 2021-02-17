@@ -29,7 +29,12 @@ class DetailsViewController: UIViewController {
         self.titleLabel.text = movie.title
         self.scoreLabel.text = "Score: " + String(movie.voteAverage) + "/10"
         self.votesLabel.text = "Votes: " + String(movie.voteCount)
-        self.dateLabel.text = "Release: " + movie.releaseDate
+        if (movie.releaseDate != "") {
+            self.dateLabel.text = "Release: " + movie.releaseDate
+        }
+        else {
+            self.dateLabel.text = "Unreleased"
+        }
         if (movie.overview == "") {
             self.overviewContentLabel.text = "No overview available."
         }
