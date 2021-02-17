@@ -39,7 +39,30 @@ class MainTableViewController: UITableViewController, UICollectionViewDelegate, 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let sender = (collectionView.cellForItem(at: indexPath) as! MovieCollectionViewCell).getMovie()
         if (sender != nil) {
-            self.performSegue(withIdentifier: "ShowMovieDetails", sender: sender)
+            let alert = UIAlertController(title: nil, message: "", preferredStyle: .alert)
+            
+            let constraintHeight = NSLayoutConstraint(
+                item: alert.view!, attribute: NSLayoutConstraint.Attribute.height, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute:
+                NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 60)
+            alert.view.addConstraint(constraintHeight)
+            
+            let constraintWidth = NSLayoutConstraint(
+                item: alert.view!, attribute: NSLayoutConstraint.Attribute.width, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute:
+                NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 60)
+            alert.view.addConstraint(constraintWidth)
+            
+            let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 5, y: 5, width: 50, height: 50))
+            loadingIndicator.hidesWhenStopped = true
+            loadingIndicator.style = UIActivityIndicatorView.Style.gray
+            loadingIndicator.startAnimating();
+            
+            alert.view.addSubview(loadingIndicator)
+            present(alert, animated: true, completion: nil)
+            sender?.loadImages(completion: {
+                self.dismiss(animated: false, completion: {
+                    self.performSegue(withIdentifier: "ShowMovieDetails", sender: sender)
+                    })
+            })
         }
     }
     

@@ -25,8 +25,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SearchMovieCollectionViewCell",
                                                       for: indexPath) as! SearchMovieCollectionViewCell
-        cell.titleLabel.text = (movies?.results[indexPath.row] as! Movie).title
-        cell.backdropImage.image = (movies?.results[indexPath.row] as! Movie).backdropImage
+        cell.loadData(movie: movies?.results[indexPath.row] as! Movie)
         return cell
     }
     
@@ -37,6 +36,35 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
         return footerView
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let sender = (collectionView.cellForItem(at: indexPath) as! SearchMovieCollectionViewCell).getMovie()
+        if (sender != nil) {
+            let alert = UIAlertController(title: nil, message: "", preferredStyle: .alert)
+            
+            let constraintHeight = NSLayoutConstraint(
+                item: alert.view!, attribute: NSLayoutConstraint.Attribute.height, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute:
+                NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 60)
+            alert.view.addConstraint(constraintHeight)
+            
+            let constraintWidth = NSLayoutConstraint(
+                item: alert.view!, attribute: NSLayoutConstraint.Attribute.width, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute:
+                NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 60)
+            alert.view.addConstraint(constraintWidth)
+            
+            let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 5, y: 5, width: 50, height: 50))
+            loadingIndicator.hidesWhenStopped = true
+            loadingIndicator.style = UIActivityIndicatorView.Style.gray
+            loadingIndicator.startAnimating();
+            
+            alert.view.addSubview(loadingIndicator)
+            present(alert, animated: true, completion: nil)
+            sender?.loadImages(completion: {
+                self.dismiss(animated: false, completion: {
+                    self.performSegue(withIdentifier: "ShowSearchMovieDetails", sender: sender)
+                })
+            })
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,6 +104,13 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
         if let query = self.searchTextField.text {
             self.footer?.nextPage()
             self.fetchData(query: query, page: footer!.getCurrentPage())
+        }
+    }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if (segue.identifier == "ShowSearchMovieDetails") {
+            if let sender: Movie = sender as? Movie {
+                (segue.destination as! DetailsViewController).prepareData(movie: sender)
+            }
         }
     }
 }

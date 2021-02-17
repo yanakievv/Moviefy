@@ -30,7 +30,12 @@ class DetailsViewController: UIViewController {
         self.scoreLabel.text = "Score: " + String(movie.voteAverage) + "/10"
         self.votesLabel.text = "Votes: " + String(movie.voteCount)
         self.dateLabel.text = "Release: " + movie.releaseDate
-        self.overviewContentLabel.text = movie.overview
+        if (movie.overview == "") {
+            self.overviewContentLabel.text = "No overview available."
+        }
+        else {
+            self.overviewContentLabel.text = movie.overview
+        }
     }
     
     override func viewDidLoad() {

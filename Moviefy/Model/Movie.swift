@@ -33,24 +33,35 @@ class Movie {
         self.voteAverage = voteAverage ?? 0
         self.voteCount = voteCount ?? 0
         self.releaseDate = releaseDate ?? ""
-        self.loadImages()
+        self.loadThunmbail()
     }
     
-    func loadImages() {
+    func loadThunmbail() {
         MovieStore.interface.getImage(path: self.backdropPath ?? "", size: MovieImageSize.small, completion: {img in
-            if let img = img {
+            if (self.backdropPath == nil || self.backdropPath == "") {
+                self.thumbnail = UIImage(named: "no-image.png")
+            }
+            else if let img = img {
                 self.thumbnail = UIImage(data: img)
             }
         })
+    }
+    
+    func loadImages(completion: @escaping () -> ()) {
         MovieStore.interface.getImage(path: self.backdropPath ?? "", size: MovieImageSize.big, completion: {img in
-            if let img = img {
+            if (self.backdropPath == nil || self.backdropPath == "") {
+                self.backdropImage = UIImage(named: "no-image.png")
+            }
+            else if let img = img {
                 self.backdropImage = UIImage(data: img)
             }
+
         })
         MovieStore.interface.getImage(path: self.posterPath ?? "", size: MovieImageSize.original, completion: {img in
             if let img = img {
                 self.posterImage = UIImage(data: img)
             }
+            completion()
         })
     }
 }
