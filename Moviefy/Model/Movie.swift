@@ -24,23 +24,33 @@ class Movie {
     var backdropImage: UIImage? = nil
     var thumbnail: UIImage? = nil
     
-    init(id: Int, title: String, backdropPath: String?, posterPath: String?, overview: String, voteAverage: Double, voteCount: Int, releaseDate: String) {
-        self.id = id
-        self.title = title
+    init(id: Int?, title: String?, backdropPath: String?, posterPath: String?, overview: String?, voteAverage: Double?, voteCount: Int?, releaseDate: String?) {
+        self.id = id ?? 0
+        self.title = title ?? ""
         self.backdropPath = backdropPath
         self.posterPath = posterPath
-        self.overview = overview
-        self.voteAverage = voteAverage
-        self.voteCount = voteCount
-        self.releaseDate = releaseDate
+        self.overview = overview ?? ""
+        self.voteAverage = voteAverage ?? 0
+        self.voteCount = voteCount ?? 0
+        self.releaseDate = releaseDate ?? ""
+        self.loadImages()
+    }
+    
+    func loadImages() {
         MovieStore.interface.getImage(path: self.backdropPath ?? "", size: MovieImageSize.small, completion: {img in
-            self.thumbnail = UIImage(data: img!)
+            if let img = img {
+                self.thumbnail = UIImage(data: img)
+            }
         })
         MovieStore.interface.getImage(path: self.backdropPath ?? "", size: MovieImageSize.big, completion: {img in
-            self.backdropImage = UIImage(data: img!)
+            if let img = img {
+                self.backdropImage = UIImage(data: img)
+            }
         })
         MovieStore.interface.getImage(path: self.posterPath ?? "", size: MovieImageSize.original, completion: {img in
-            self.posterImage = UIImage(data: img!)
+            if let img = img {
+                self.posterImage = UIImage(data: img)
+            }
         })
     }
 }

@@ -9,33 +9,73 @@
 import UIKit
 
 class SearchViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    var movies: MovieResponse? = nil
+    
     @IBOutlet var searchTextField: UITextField!
     @IBOutlet var goButton: UIButton!
     
+    @IBOutlet var collectionView: UICollectionView!
+    var footer: SearchCollectionReusableView?
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
+        return movies?.results.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        <#code#>
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SearchMovieCollectionViewCell",
+                                                      for: indexPath) as! SearchMovieCollectionViewCell
+        cell.titleLabel.text = (movies?.results[indexPath.row] as! Movie).title
+        cell.backdropImage.image = (movies?.results[indexPath.row] as! Movie).backdropImage
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SearchCollectionViewFooter", for: indexPath as IndexPath) as! SearchCollectionReusableView
+        footer = footerView
+        footer?.toggleViews(visible: (self.movies?.results.count ?? 0) > 0)
+        return footerView
     }
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        collectionView.delegate = self
+        collectionView.dataSource = self
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func fetchData(query: String, page: Int) {
+        MovieStore.interface.searchMovie(query: query, page: page, completion: { (response, pages) in
+            if let response = response {
+                self.movies = response
+                DispatchQueue.main.async {
+                    if (pages == 0) {
+                        self.footer?.toggleViews(visible: false)
+                    }
+                    else if (pages > 0 && page == 1) {
+                        self.footer?.toggleViews(visible: true)
+                        self.footer?.search(pages: pages)
+                    }
+                    self.collectionView.reloadData()
+                }
+            }
+            })
     }
-    */
-
+    @IBAction func onTapGo(_ sender: UIButton) {
+        if let query = self.searchTextField.text {
+            self.fetchData(query: query, page: 1)
+        }
+    }
+    @IBAction func onTapPrevious(_ sender: UIButton) {
+        if let query = self.searchTextField.text {
+            self.footer?.previousPage()
+            self.fetchData(query: query, page: footer!.getCurrentPage())
+        }
+    }
+    @IBAction func onTapNext(_ sender: UIButton) {
+        if let query = self.searchTextField.text {
+            self.footer?.nextPage()
+            self.fetchData(query: query, page: footer!.getCurrentPage())
+        }
+    }
 }

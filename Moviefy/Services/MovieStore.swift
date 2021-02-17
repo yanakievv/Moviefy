@@ -28,7 +28,11 @@ class MovieStore: MovieService {
                 return
             }
             let responseString = String(data: data!, encoding: .utf8)!
-            let dict = responseString.toDictionary()
+            guard let dict = responseString.toDictionary() else {
+                NSLog("E: MovieStore -- String().toDictionary() returned nil")
+                completion(nil)
+                return
+            }
             let results = dict.value(forKeyPath: "results") as? NSArray
             let response: MovieResponse = MovieResponse(results: results!)
             completion(response)
@@ -41,7 +45,7 @@ class MovieStore: MovieService {
         return
     }
     
-    func searchMovie(query: String, page: Int = 1, completion: @escaping (MovieResponse?) -> ()) {
+    func searchMovie(query: String, page: Int = 1, completion: @escaping (MovieResponse?, Int) -> ()) {
         guard let url = URL(string: "\(baseURL)/search/movie") else {
             NSLog("E: MovieStore searchMovie url error")
             return
@@ -49,19 +53,23 @@ class MovieStore: MovieService {
         loadURL(url: url, params: ["query" : query, "page" : String(page)], completion: {(data, urlResponse, error) in
             if (error != nil) {
                 NSLog("E: MovieStore -- loadURL error != nil")
-                completion(nil)
+                completion(nil, 0)
                 return
             }
             if (data == nil || urlResponse == nil) {
                 NSLog("E: MovieStore -- data/response returned nil")
-                completion(nil)
+                completion(nil, 0)
                 return
             }
             let responseString = String(data: data!, encoding: .utf8)!
-            let dict = responseString.toDictionary()
+            guard let dict = responseString.toDictionary() else {
+                NSLog("E: MovieStore -- String().toDictionary() returned nil")
+                completion(nil, 0)
+                return
+            }
             let results = dict.value(forKeyPath: "results") as? NSArray
             let response: MovieResponse = MovieResponse(results: results!)
-            completion(response)
+           completion(response, dict["total_pages"] as! Int)
         })
         return
     }
