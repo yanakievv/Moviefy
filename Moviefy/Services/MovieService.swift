@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 
 protocol MovieService {
-    func getMovies(from endpoint: MovieListEndpoint, completion: @escaping (MovieResponse?) -> ())
-    func getMovie(id: Int, completion: @escaping (Movie?) -> ())
-    func searchMovie(query: String, page: Int, completion: @escaping (MovieResponse?, Int) -> ())
+    func getMovies(from endpoint: MovieListEndpoint, completion: @escaping (MoviesResponse?) -> ())
+    func getMovie(id: Int, completion: @escaping (MovieResponse?) -> ())
+    func searchMovie(query: String, page: Int, completion: @escaping (MoviesResponse?, Int) -> ())
     func getImage(path: String, size: MovieImageSize, completion: @escaping (Data?) -> ())
 }
 

@@ -10,7 +10,10 @@ import UIKit
 
 class SearchViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
-    var movies: MovieResponse? = nil
+    // TODO: rework in a way to remove paging and make a single page with all the content being loaded on the go
+    
+    var movies: MoviesResponse? = nil
+    var thumbnails: [String : UIImage] = [:]
     
     @IBOutlet var searchTextField: UITextField!
     @IBOutlet var goButton: UIButton!
@@ -25,7 +28,8 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SearchMovieCollectionViewCell",
                                                       for: indexPath) as! SearchMovieCollectionViewCell
-        cell.loadData(movie: movies?.results[indexPath.row] as! Movie)
+        let movie = movies?.results[indexPath.row] as! MovieResponse
+        cell.loadData(movie: movie, withImage: thumbnails[movie.title])
         return cell
     }
     
@@ -37,31 +41,20 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let sender = (collectionView.cellForItem(at: indexPath) as! SearchMovieCollectionViewCell).getMovie()
-        if (sender != nil) {
+        var sender: [String:Any] = [:]
+        sender["movie"] = movies?.results[indexPath.row]
+        if (sender["movie"] != nil) {
             let alert = UIAlertController(title: nil, message: "", preferredStyle: .alert)
-            
-            let constraintHeight = NSLayoutConstraint(
-                item: alert.view!, attribute: NSLayoutConstraint.Attribute.height, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute:
-                NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 60)
-            alert.view.addConstraint(constraintHeight)
-            
-            let constraintWidth = NSLayoutConstraint(
-                item: alert.view!, attribute: NSLayoutConstraint.Attribute.width, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute:
-                NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 60)
-            alert.view.addConstraint(constraintWidth)
-            
-            let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 5, y: 5, width: 50, height: 50))
-            loadingIndicator.hidesWhenStopped = true
-            loadingIndicator.style = UIActivityIndicatorView.Style.gray
-            loadingIndicator.startAnimating();
-            
-            alert.view.addSubview(loadingIndicator)
+            alert.deployCustomIndicator()
             present(alert, animated: true, completion: nil)
-            sender?.loadImages(completion: {
-                self.dismiss(animated: false, completion: {
-                    self.performSegue(withIdentifier: "ShowSearchMovieDetails", sender: sender)
-                })
+            self.loadImages(movie: sender["movie"] as! MovieResponse, completion: { backdrop, poster in
+                sender["backdrop"] = backdrop
+                sender["poster"] = poster
+                DispatchQueue.main.async {
+                    self.dismiss(animated: false, completion: {
+                        self.performSegue(withIdentifier: "ShowSearchMovieDetails", sender: sender)
+                    })
+                }
             })
         }
     }
@@ -73,8 +66,9 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
     }
     
     func fetchData(query: String, page: Int) {
-        MovieStore.interface.searchMovie(query: query, page: page, completion: { (response, pages) in
+        MovieStore().searchMovie(query: query, page: page, completion: { (response, pages) in
             if let response = response {
+                self.loadThumbnails(forMovieResponse: response)
                 self.movies = response
                 DispatchQueue.main.async {
                     if (pages == 0) {
@@ -89,6 +83,44 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
             }
             })
     }
+    
+    func loadThumbnails(forMovieResponse: MoviesResponse!) {
+        for i in forMovieResponse.results as! [MovieResponse] {
+            self.loadThumbnail(movie: i)
+        }
+    }
+    
+    private func loadThumbnail(movie: MovieResponse) {
+        MovieStore().getImage(path: movie.backdropPath ?? "", size: MovieImageSize.medium, completion: {img in
+            if (movie.backdropPath == nil || movie.backdropPath == "") {
+                self.thumbnails[movie.title] = UIImage(named: "no-image.png")
+            }
+            else if let img = img {
+                self.thumbnails[movie.title] = UIImage(data: img)
+            }
+        })
+    }
+    
+    func loadImages(movie: MovieResponse, completion: @escaping (UIImage?, UIImage?) -> ()) {
+        var backdrop: UIImage?
+        var poster: UIImage?
+        MovieStore().getImage(path: movie.backdropPath ?? "", size: MovieImageSize.big, completion: {img in
+            if (movie.backdropPath == nil || movie.backdropPath == "") {
+                backdrop = UIImage(named: "no-image.png")
+            }
+            else if let img = img {
+                backdrop = UIImage(data: img)
+            }
+            
+        })
+        MovieStore().getImage(path: movie.posterPath ?? "", size: MovieImageSize.original, completion: {img in
+            if let img = img {
+                poster = UIImage(data: img)
+            }
+            completion(backdrop, poster)
+        })
+    }
+    
     @IBAction func onTapGo(_ sender: UIButton) {
         if let query = self.searchTextField.text {
             self.fetchData(query: query, page: 1)
@@ -108,8 +140,8 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "ShowSearchMovieDetails") {
-            if let sender: Movie = sender as? Movie {
-                (segue.destination as! DetailsViewController).prepareData(movie: sender)
+            if let sender: [String : Any] = sender as? [String : Any] {
+                (segue.destination as! DetailsViewController).prepareData(movie: sender["movie"] as! MovieResponse?, backdrop: sender["backdrop"] as! UIImage?, poster: sender["poster"] as! UIImage?)
             }
         }
     }

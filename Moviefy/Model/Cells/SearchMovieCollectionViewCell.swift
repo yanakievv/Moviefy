@@ -10,19 +10,13 @@ import UIKit
 
 class SearchMovieCollectionViewCell: UICollectionViewCell {
     
-    private var movie: Movie?
-    
     @IBOutlet var backdropImage: UIImageView!
     @IBOutlet var titleLabel: UILabel!
     
-    func loadData(movie: Movie) {
-        self.movie = movie
-        self.backdropImage.image = movie.thumbnail
+    func loadData(movie: MovieResponse, withImage: UIImage?) {
         self.titleLabel.text = movie.title
+        if let img = withImage {
+            self.backdropImage.image = img
+        }
     }
-    
-    func getMovie() -> Movie? {
-        return movie
-    }
-    
 }

@@ -11,28 +11,7 @@ import UIKit
 class MainTableViewCell: UITableViewCell {
 
     @IBOutlet private var collectionView: UICollectionView!
-    private var movies: MovieResponse?
-    
-    func loadData(from: [MovieResponse?]) {
-        if (from.count > self.collectionView.tag) {
-            if let data = from[collectionView.tag] {
-                movies = data
-            }
-            else {
-                NSLog("W: MainTableViewCell -- loadData from nil movie")
-            }
-        }
-        else {
-            NSLog("W: MainTableViewCell -- loadData from nil response")
-        }
         
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        self.selectionStyle = .none
-    }
-
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }

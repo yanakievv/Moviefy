@@ -10,26 +10,14 @@ import UIKit
 
 class MovieCollectionViewCell: UICollectionViewCell {
     
-    private var movie: Movie?
     @IBOutlet private var title: UILabel!
     @IBOutlet private var thumbnailImageView: UIImageView!
     
-    func loadData(from: Movie?) {
-        if let from = from {
-            movie = from
-            self.setProperties()
+    func loadData(from: MovieResponse, withThumbnail: UIImage?) {
+        if let image = withThumbnail {
+            thumbnailImageView.image = image
         }
-        else {
-            NSLog("W: MovieCollectionViewCell -- loadData from nil")
-        }
+        title.text = from.title
     }
     
-    func setProperties() {
-        title.text = movie?.title
-        thumbnailImageView.image = movie?.thumbnail
-    }
-    
-    func getMovie() -> Movie? {
-        return movie
-    }
 }

@@ -38,8 +38,8 @@ extension String{
 }
 
 extension NSDictionary {
-    func toMovie() -> Movie {
-        return Movie(id: self.value(forKeyPath: MovieKey.id.rawValue) as? Int, title: self.value(forKeyPath: MovieKey.title.rawValue) as? String, backdropPath: self.value(forKeyPath: MovieKey.backdropPath.rawValue) as? String, posterPath: self.value(forKeyPath: MovieKey.posterPath.rawValue) as? String, overview: self.value(forKeyPath: MovieKey.overview.rawValue) as? String, voteAverage: self.value(forKeyPath: MovieKey.voteAverage.rawValue) as? Double, voteCount: self.value(forKeyPath: MovieKey.voteCount.rawValue) as? Int, releaseDate: self.value(forKeyPath: MovieKey.releaseDate.rawValue) as? String)
+    func toMovie() -> MovieResponse {
+        return MovieResponse(id: self.value(forKeyPath: MovieKey.id.rawValue) as? Int, title: self.value(forKeyPath: MovieKey.title.rawValue) as? String, backdropPath: self.value(forKeyPath: MovieKey.backdropPath.rawValue) as? String, posterPath: self.value(forKeyPath: MovieKey.posterPath.rawValue) as? String, overview: self.value(forKeyPath: MovieKey.overview.rawValue) as? String, voteAverage: self.value(forKeyPath: MovieKey.voteAverage.rawValue) as? Double, voteCount: self.value(forKeyPath: MovieKey.voteCount.rawValue) as? Int, releaseDate: self.value(forKeyPath: MovieKey.releaseDate.rawValue) as? String)
     }
 }
 
@@ -53,5 +53,26 @@ extension UIButton {
             self.setTitleColor(#colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1), for: UIControl.State.normal)
             self.isEnabled = false
         }
+    }
+}
+
+extension UIAlertController {
+    func deployCustomIndicator() {
+        let constraintHeight = NSLayoutConstraint(
+            item: self.view!, attribute: NSLayoutConstraint.Attribute.height, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute:
+            NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 60)
+        self.view.addConstraint(constraintHeight)
+        
+        let constraintWidth = NSLayoutConstraint(
+            item: self.view!, attribute: NSLayoutConstraint.Attribute.width, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute:
+            NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 60)
+        self.view.addConstraint(constraintWidth)
+        
+        let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 5, y: 5, width: 50, height: 50))
+        loadingIndicator.hidesWhenStopped = true
+        loadingIndicator.style = UIActivityIndicatorView.Style.gray
+        loadingIndicator.startAnimating();
+        
+        self.view.addSubview(loadingIndicator)
     }
 }
