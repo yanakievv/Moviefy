@@ -54,7 +54,9 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if (indexPath.row == collectionView.numberOfItems(inSection: indexPath.section) - 3) {
-            self.fetchData(query: self.query)
+            self.fetchData(query: self.query, completion: {
+                DispatchQueue.main.async(execute: self.collectionView.reloadData)
+            })
         }
     }
     
@@ -64,7 +66,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
         collectionView.dataSource = self
     }
     
-    private func fetchData(query: String) {
+    private func fetchData(query: String, completion: @escaping () -> ()) {
         MovieStore().searchMovie(query: query, page: (((self.movies?.results.count ?? 0) / 20) + 1), completion: { (response, pages) in
             if let response = response {
                 self.loadThumbnails(forMovies: response.results)
@@ -76,9 +78,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
                 else {
                     self.movies = response
                 }
-                DispatchQueue.main.async {
-                    self.collectionView.reloadData()
-                }
+                completion()
             }
         })
     }
@@ -125,7 +125,12 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
             self.query = query
             self.movies = nil
             self.thumbnails = [:]
-            self.fetchData(query: query)
+            self.fetchData(query: query, completion: {
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                    self.collectionView.setContentOffset(CGPoint(x:0,y:0), animated: true)
+                }
+            })
         }
     }
     
