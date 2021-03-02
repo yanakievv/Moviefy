@@ -11,12 +11,12 @@ import UIKit
 
 class MovieStore: MovieService {
 
-    func getMovies(from endpoint: MovieListEndpoint, completion: @escaping (MoviesResponse?) -> ()) {
+    func getMovies(from endpoint: MovieListEndpoint, page: Int = 1, completion: @escaping (MoviesResponse?) -> ()) {
         guard let url = URL(string: "\(baseURL)/movie/\(endpoint.rawValue)") else {
             NSLog("E: func getMovies -- url error")
             return
         }
-        loadURL(url: url, completion: {(data, response, error) in
+        loadURL(url: url, params: ["page" : String(page)], completion: {(data, response, error) in
             self.responseCheck(data: data, response: response, error: error, fromMethod: "func getMovies")
             let responseString = String(data: data!, encoding: .utf8)!
             guard let dict = responseString.toDictionary() else {

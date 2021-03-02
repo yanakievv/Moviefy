@@ -14,9 +14,9 @@ class MainTableViewController: UITableViewController, UICollectionViewDelegate, 
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if (self.dataSource.arrayOfSections.count > collectionView.tag && self.dataSource.arrayOfSections[collectionView.tag] != nil) {
-            return self.dataSource.arrayOfSections[collectionView.tag]?.results.count ?? 20
+            return self.dataSource.arrayOfSections[collectionView.tag]?.results.count ?? 0 
         }
-        return 20
+        return 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -47,6 +47,17 @@ class MainTableViewController: UITableViewController, UICollectionViewDelegate, 
                 }
             })
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if (indexPath.row == collectionView.numberOfItems(inSection: indexPath.section) - 3) {
+            updateNextSet(collectionView: collectionView.tag)
+            DispatchQueue.main.async(execute: collectionView.reloadData)
+        }
+    }
+    
+    private func updateNextSet(collectionView: Int){
+        self.dataSource.fetchDataIn(section: collectionView)
     }
         
     override func viewWillAppear(_ animated: Bool) {

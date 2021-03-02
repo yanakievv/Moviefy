@@ -10,10 +10,10 @@ import UIKit
 
 class MainTableViewDataSource: NSObject, UITableViewDataSource {
     
-    var popular: MoviesResponse?
-    var trending: MoviesResponse?
-    var topRated: MoviesResponse?
-    var upcoming: MoviesResponse?
+    private var popular: MoviesResponse?
+    private var trending: MoviesResponse?
+    private var topRated: MoviesResponse?
+    private var upcoming: MoviesResponse?
     
     var arrayOfSections = [MoviesResponse?]()
     var thumbnailsForTitle: [String : UIImage] = [:]
@@ -48,7 +48,7 @@ class MainTableViewDataSource: NSObject, UITableViewDataSource {
     func fetchData(completion: @escaping () -> ()) {
         MovieStore().getMovies(from: MovieListEndpoint.popular, completion: { response in
             if let response = response {
-                self.loadThumbnails(forMovieResponse: response)
+                self.loadThumbnails(forMovies: response.results)
                 self.popular = response
                 self.arrayOfSections.append(self.popular)
                 completion()
@@ -56,7 +56,7 @@ class MainTableViewDataSource: NSObject, UITableViewDataSource {
         })
         MovieStore().getMovies(from: MovieListEndpoint.nowPlaying, completion: { response in
             if let response = response {
-                self.loadThumbnails(forMovieResponse: response)
+                self.loadThumbnails(forMovies: response.results)
                 self.trending = response
                 self.arrayOfSections.append(self.trending)
                 completion()
@@ -64,7 +64,7 @@ class MainTableViewDataSource: NSObject, UITableViewDataSource {
         })
         MovieStore().getMovies(from: MovieListEndpoint.topRated, completion: { response in
             if let response = response {
-                self.loadThumbnails(forMovieResponse: response)
+                self.loadThumbnails(forMovies: response.results)
                 self.topRated = response
                 self.arrayOfSections.append(self.topRated)
                 completion()
@@ -72,7 +72,7 @@ class MainTableViewDataSource: NSObject, UITableViewDataSource {
         })
         MovieStore().getMovies(from: MovieListEndpoint.upcoming, completion: { response in
             if let response = response {
-                self.loadThumbnails(forMovieResponse: response)
+                self.loadThumbnails(forMovies: response.results)
                 self.upcoming = response
                 self.arrayOfSections.append(self.upcoming)
                 completion()
@@ -80,9 +80,22 @@ class MainTableViewDataSource: NSObject, UITableViewDataSource {
         })
     }
     
-    func loadThumbnails(forMovieResponse: MoviesResponse!) {
-        for i in forMovieResponse.results as! [MovieResponse] {
-            self.loadThumbnail(movie: i)
+
+    
+    func fetchDataIn(section: Int) {
+        MovieStore().getMovies(from: MovieListEndpoint.allCases[section], page: (((arrayOfSections[section]?.results.count ?? 0) / 20) + 1), completion: { response in
+            if let response = response {
+                self.loadThumbnails(forMovies: response.results)
+                for movie in response.results {
+                    self.arrayOfSections[section]?.results.add(movie)
+                }
+            }
+        })
+    }
+    
+    private func loadThumbnails(forMovies: NSMutableArray) {
+        for i in forMovies {
+            self.loadThumbnail(movie: i as! MovieResponse)
         }
     }
     

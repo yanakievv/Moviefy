@@ -10,16 +10,16 @@ import UIKit
 
 class SearchViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
-    // TODO: rework in a way to remove paging and make a single page with all the content being loaded on the go
+    //private var pages: Int = 1
+    private var query: String = ""
     
-    var movies: MoviesResponse? = nil
-    var thumbnails: [String : UIImage] = [:]
+    private var movies: MoviesResponse? = nil
+    private var thumbnails: [String : UIImage] = [:]
     
     @IBOutlet var searchTextField: UITextField!
     @IBOutlet var goButton: UIButton!
     
     @IBOutlet var collectionView: UICollectionView!
-    var footer: SearchCollectionReusableView?
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return movies?.results.count ?? 0
@@ -31,13 +31,6 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
         let movie = movies?.results[indexPath.row] as! MovieResponse
         cell.loadData(movie: movie, withImage: thumbnails[movie.title])
         return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SearchCollectionViewFooter", for: indexPath as IndexPath) as! SearchCollectionReusableView
-        footer = footerView
-        footer?.toggleViews(visible: (self.movies?.results.count ?? 0) > 0)
-        return footerView
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -58,35 +51,41 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
             })
         }
     }
-
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if (indexPath.row == collectionView.numberOfItems(inSection: indexPath.section) - 3) {
+            self.fetchData(query: self.query)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.delegate = self
         collectionView.dataSource = self
     }
     
-    func fetchData(query: String, page: Int) {
-        MovieStore().searchMovie(query: query, page: page, completion: { (response, pages) in
+    private func fetchData(query: String) {
+        MovieStore().searchMovie(query: query, page: (((self.movies?.results.count ?? 0) / 20) + 1), completion: { (response, pages) in
             if let response = response {
-                self.loadThumbnails(forMovieResponse: response)
-                self.movies = response
+                self.loadThumbnails(forMovies: response.results)
+                if (self.movies != nil) {
+                    for movie in response.results {
+                        self.movies?.results.add(movie)
+                    }
+                }
+                else {
+                    self.movies = response
+                }
                 DispatchQueue.main.async {
-                    if (pages == 0) {
-                        self.footer?.toggleViews(visible: false)
-                    }
-                    else if (pages > 0 && page == 1) {
-                        self.footer?.toggleViews(visible: true)
-                        self.footer?.search(pages: pages)
-                    }
                     self.collectionView.reloadData()
                 }
             }
-            })
+        })
     }
     
-    func loadThumbnails(forMovieResponse: MoviesResponse!) {
-        for i in forMovieResponse.results as! [MovieResponse] {
-            self.loadThumbnail(movie: i)
+    private func loadThumbnails(forMovies: NSMutableArray) {
+        for i in forMovies {
+            self.loadThumbnail(movie: i as! MovieResponse)
         }
     }
     
@@ -101,7 +100,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
         })
     }
     
-    func loadImages(movie: MovieResponse, completion: @escaping (UIImage?, UIImage?) -> ()) {
+    private func loadImages(movie: MovieResponse, completion: @escaping (UIImage?, UIImage?) -> ()) {
         var backdrop: UIImage?
         var poster: UIImage?
         MovieStore().getImage(path: movie.backdropPath ?? "", size: MovieImageSize.big, completion: {img in
@@ -123,21 +122,13 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
     
     @IBAction func onTapGo(_ sender: UIButton) {
         if let query = self.searchTextField.text {
-            self.fetchData(query: query, page: 1)
+            self.query = query
+            self.movies = nil
+            self.thumbnails = [:]
+            self.fetchData(query: query)
         }
     }
-    @IBAction func onTapPrevious(_ sender: UIButton) {
-        if let query = self.searchTextField.text {
-            self.footer?.previousPage()
-            self.fetchData(query: query, page: footer!.getCurrentPage())
-        }
-    }
-    @IBAction func onTapNext(_ sender: UIButton) {
-        if let query = self.searchTextField.text {
-            self.footer?.nextPage()
-            self.fetchData(query: query, page: footer!.getCurrentPage())
-        }
-    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "ShowSearchMovieDetails") {
             if let sender: [String : Any] = sender as? [String : Any] {

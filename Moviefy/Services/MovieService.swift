@@ -10,24 +10,25 @@ import Foundation
 import UIKit
 
 protocol MovieService {
-    func getMovies(from endpoint: MovieListEndpoint, completion: @escaping (MoviesResponse?) -> ())
+    func getMovies(from endpoint: MovieListEndpoint, page: Int, completion: @escaping (MoviesResponse?) -> ())
     func getMovie(id: Int, completion: @escaping (MovieResponse?) -> ())
     func searchMovie(query: String, page: Int, completion: @escaping (MoviesResponse?, Int) -> ())
     func getImage(path: String, size: MovieImageSize, completion: @escaping (Data?) -> ())
 }
 
 enum MovieListEndpoint: String, CaseIterable {
-    case nowPlaying = "now_playing"
-    case upcoming = "upcoming"
-    case topRated = "top_rated"
     case popular = "popular"
+    case nowPlaying = "now_playing"
+    case topRated = "top_rated"
+    case upcoming = "upcoming"
+
     
     var description: String {
         switch self {
-        case .nowPlaying: return "Trending"
-        case .upcoming: return "Upcoming"
-        case .topRated: return "Top Rated"
         case .popular: return "Popular"
+        case .nowPlaying: return "Trending"
+        case .topRated: return "Top Rated"
+        case .upcoming: return "Upcoming"
         }
     }
 }
