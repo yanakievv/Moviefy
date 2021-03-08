@@ -18,17 +18,18 @@ class MovieStore: MovieService {
         }
         loadURL(url: url, params: ["page" : String(page)], completion: {(data, response, error) in
             self.responseCheck(data: data, response: response, error: error, fromMethod: "func getMovies")
-            let responseString = String(data: data!, encoding: .utf8)!
-            guard let dict = responseString.toDictionary() else {
-                NSLog("E: func getMovies -- String().toDictionary() returned nil")
-                completion(nil)
+            guard let data = data else {
                 return
             }
-            let results = dict.value(forKeyPath: "results") as? NSArray
-            let response: MoviesResponse = MoviesResponse(results: results!)
-            completion(response)
+            do {
+                let decodedResponse: MoviesResponse = try self.jsonDecoder.decode(MoviesResponse.self, from: data)
+                completion(decodedResponse)
+            }
+            catch {
+                NSLog("E: func getMovies -- \(error)")
+                completion(nil)
+            }
         })
-        
     }
     
     func getMovie(id: Int, completion: @escaping (MovieResponse?) -> ()) {
@@ -36,22 +37,24 @@ class MovieStore: MovieService {
         return
     }
     
-    func searchMovie(query: String, page: Int = 1, completion: @escaping (MoviesResponse?, Int) -> ()) {
+    func searchMovie(query: String, page: Int = 1, completion: @escaping (MoviesResponse?) -> ()) {
         guard let url = URL(string: "\(baseURL)/search/movie") else {
             NSLog("E: func searchMovie url error")
             return
         }
         loadURL(url: url, params: ["query" : query, "page" : String(page)], completion: {(data, response, error) in
             self.responseCheck(data: data, response: response, error: error, fromMethod: "func searchMovie")
-            let responseString = String(data: data!, encoding: .utf8)!
-            guard let dict = responseString.toDictionary() else {
-                NSLog("E: func searchMovie -- String().toDictionary() returned nil")
-                completion(nil, 0)
+            guard let data = data else {
                 return
             }
-            let results = dict.value(forKeyPath: "results") as? NSArray
-            let response: MoviesResponse = MoviesResponse(results: results!)
-           completion(response, dict["total_pages"] as! Int)
+            do {
+                let decodedResponse: MoviesResponse = try self.jsonDecoder.decode(MoviesResponse.self, from: data)
+                completion(decodedResponse)
+            }
+            catch {
+                NSLog("E: func searchMovie -- \(error)")
+                completion(nil)
+            }
         })
         return
     }
@@ -73,11 +76,8 @@ class MovieStore: MovieService {
     private let baseURL = "https://api.themoviedb.org/3"
     private let imageBaseURL = "https://image.tmdb.org/t/p/"
     private let sessionURL = URLSession.shared
-    //private let jsonDecoder = Util.jsonDecoder
-    
-    // The sources that I've checked use some kind of a jsonDecoder, I didn't succeed in making it work so I just parsed the data manually
-    // Im still leaving it here for future comments on how to make it work or remove it completely
-    
+    private let jsonDecoder = Util.jsonDecoder
+        
     private func responseCheck(data: Data?, response: URLResponse?, error: Error?, fromMethod: String) {
         if (error != nil) {
             NSLog("E: \(fromMethod) -- Data task error")

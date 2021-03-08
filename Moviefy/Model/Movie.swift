@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class MovieResponse {
+class MovieResponse: Codable {
     
     let id: Int
     let title: String
@@ -18,8 +18,8 @@ class MovieResponse {
     let overview: String
     let voteAverage: Double
     let voteCount: Int
-    let releaseDate: String
-        
+    let releaseDate: String?
+    
     init(id: Int?, title: String?, backdropPath: String?, posterPath: String?, overview: String?, voteAverage: Double?, voteCount: Int?, releaseDate: String?) {
         self.id = id ?? 0
         self.title = title ?? ""
@@ -28,20 +28,31 @@ class MovieResponse {
         self.overview = overview ?? ""
         self.voteAverage = voteAverage ?? 0
         self.voteCount = voteCount ?? 0
-        self.releaseDate = releaseDate ?? ""
+        self.releaseDate = releaseDate
     }
 }
 
-struct MoviesResponse {
+struct MoviesResponse: Codable {
     
-    var results: NSMutableArray
+    var results: [MovieResponse]
+    let page: Int
+    let totalPages: Int
+    let totalResults: Int
     
-    init(results: NSArray) {
-        self.results = NSMutableArray()
+    /*enum CodingKeys: String, CodingKey {
+        case page = "page"
+        case results = "results"
+        case totalPages = "total_pages"
+        case totalResults = "total_results"
+        
+    }*/
+    
+    /*init(results: [MovieResponse]) {
+        self.results = [MovieResponse]()
         for i in results {
-            self.results.add((i as! NSDictionary).toMovie())
+            self.results.append(i)
         }
-    }
+    }*/
     
 }
 

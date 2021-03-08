@@ -8,41 +8,32 @@
 
 import UIKit
 
-class MainTableViewDataSource: NSObject, UITableViewDataSource {
+class MainTableViewDataSource: NSObject {
     
     private var popular: MoviesResponse?
     private var trending: MoviesResponse?
     private var topRated: MoviesResponse?
     private var upcoming: MoviesResponse?
     
-    var arrayOfSections = [MoviesResponse?]()
-    var thumbnailsForTitle: [String : UIImage] = [:]
+    private var arrayOfSections = [MoviesResponse?]()
+    private var thumbnailsForTitle: [String : UIImage] = [:]
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MainTableViewCell", for: indexPath) as! MainTableViewCell
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
-    }
-        
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch (section) {
-            case 0: return "Popular"
-            case 1: return "Trending"
-            case 2: return "Top Rated"
-            case 3: return "Upcoming"
-            default: return "Other"
+    func getMoviesFromSection(_ section: Int) -> [MovieResponse]? {
+        if (section >= 0 && section < self.arrayOfSections.count) {
+            return self.arrayOfSections[section]?.results
         }
+        return nil
     }
     
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return false
+    func getNumberOfMoviesInSection(_ section: Int) -> Int {
+        if (section >= 0 && section < self.arrayOfSections.count) {
+            return self.arrayOfSections[section]?.results.count ?? 0
+        }
+        return 0
+    }
+    
+    func getThumbnailForTitle(_ title: String) -> UIImage? {
+        return thumbnailsForTitle[title]
     }
     
     func fetchData(completion: @escaping () -> ()) {
@@ -83,50 +74,91 @@ class MainTableViewDataSource: NSObject, UITableViewDataSource {
 
     
     func fetchDataIn(section: Int) {
-        MovieStore().getMovies(from: MovieListEndpoint.allCases[section], page: (((arrayOfSections[section]?.results.count ?? 0) / 20) + 1), completion: { response in
+        let page = ((arrayOfSections[section]?.results.count ?? 0) / 20) + 1
+        MovieStore().getMovies(from: MovieListEndpoint.allCases[section], page: page, completion: { response in
             if let response = response {
                 self.loadThumbnails(forMovies: response.results)
-                for movie in response.results {
-                    self.arrayOfSections[section]?.results.add(movie)
-                }
+                self.arrayOfSections[section]?.results.append(contentsOf: response.results)
             }
         })
     }
     
-    private func loadThumbnails(forMovies: NSMutableArray) {
-        for i in forMovies {
-            self.loadThumbnail(movie: i as! MovieResponse)
-        }
+    private func loadThumbnails(forMovies movies: [MovieResponse]) {
+        movies.forEach({ self.loadThumbnail(movie: $0) })
     }
     
     private func loadThumbnail(movie: MovieResponse) {
-        MovieStore().getImage(path: movie.backdropPath ?? "", size: MovieImageSize.small, completion: {img in
-            if (movie.backdropPath == nil || movie.backdropPath == "") {
-                self.thumbnailsForTitle[movie.title] = UIImage(named: "no-image.png")
-            }
-            else if let img = img {
-                self.thumbnailsForTitle[movie.title] = UIImage(data: img)
-            }
-        })
+        if let backdropPath = movie.backdropPath {
+            MovieStore().getImage(path: backdropPath, size: MovieImageSize.small, completion: {img in
+                if let img = img {
+                    self.thumbnailsForTitle[movie.title] = UIImage(data: img)
+                }
+                else {
+                    self.thumbnailsForTitle[movie.title] = UIImage(named: "no-image.png")
+                }
+            })
+        }
+        else {
+            self.thumbnailsForTitle[movie.title] = UIImage(named: "no-image.png")
+        }
     }
     
     func loadImages(movie: MovieResponse, completion: @escaping (UIImage?, UIImage?) -> ()) {
         var backdrop: UIImage?
         var poster: UIImage?
-        MovieStore().getImage(path: movie.backdropPath ?? "", size: MovieImageSize.big, completion: {img in
-            if (movie.backdropPath == nil || movie.backdropPath == "") {
-                backdrop = UIImage(named: "no-image.png")
-            }
-            else if let img = img {
-                backdrop = UIImage(data: img)
-            }
-            
-        })
-        MovieStore().getImage(path: movie.posterPath ?? "", size: MovieImageSize.original, completion: {img in
-            if let img = img {
-                poster = UIImage(data: img)
-            }
+        if let backdropPath = movie.backdropPath {
+            MovieStore().getImage(path: backdropPath, size: MovieImageSize.big, completion: {img in
+                if let img = img {
+                    backdrop = UIImage(data: img)
+                }
+                else {
+                    backdrop = UIImage(named: "no-image.png")
+                }
+            })
+        }
+        else {
+            backdrop = UIImage(named: "no-image.png")
+        }
+        if let posterPath = movie.posterPath {
+            MovieStore().getImage(path: posterPath, size: MovieImageSize.original, completion: {img in
+                if let img = img {
+                    poster = UIImage(data: img)
+                }
+                completion(backdrop, poster)
+            })
+        }
+        else {
             completion(backdrop, poster)
-        })
+        }
+        // no need to set poster to the "no-image" image, it will just show up as blank and should not mess up the layout
+    }
+}
+
+extension MainTableViewDataSource: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MainTableViewCell", for: indexPath) as! MainTableViewCell
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 4
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch (section) {
+        case 0: return "Popular"
+        case 1: return "Trending"
+        case 2: return "Top Rated"
+        case 3: return "Upcoming"
+        default: return "Other"
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return false
     }
 }

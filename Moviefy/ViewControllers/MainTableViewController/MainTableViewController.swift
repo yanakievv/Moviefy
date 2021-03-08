@@ -8,53 +8,9 @@
 
 import UIKit
 
-class MainTableViewController: UITableViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class MainTableViewController: UITableViewController {
     
     let dataSource = MainTableViewDataSource() 
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if (self.dataSource.arrayOfSections.count > collectionView.tag && self.dataSource.arrayOfSections[collectionView.tag] != nil) {
-            return self.dataSource.arrayOfSections[collectionView.tag]?.results.count ?? 0 
-        }
-        return 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MovieCollectionViewCell",
-                                                      for: indexPath) as! MovieCollectionViewCell
-        if (self.dataSource.arrayOfSections.count > collectionView.tag && self.dataSource.arrayOfSections[collectionView.tag] != nil) {
-            let movie = self.dataSource.arrayOfSections[collectionView.tag]?.results[indexPath.row] as! MovieResponse
-            cell.loadData(from: movie, withThumbnail: self.dataSource.thumbnailsForTitle[movie.title])
-        }
-
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        var sender: [String:Any] = [:]
-        sender["movie"] = self.dataSource.arrayOfSections[collectionView.tag]?.results[indexPath.row]
-        if (sender["movie"] != nil) {
-            let alert = UIAlertController(title: nil, message: "", preferredStyle: .alert)
-            alert.deployCustomIndicator()
-            present(alert, animated: true, completion: nil)
-            self.dataSource.loadImages(movie: sender["movie"] as! MovieResponse, completion: { backdrop, poster in
-                sender["backdrop"] = backdrop
-                sender["poster"] = poster
-                DispatchQueue.main.async {
-                    self.dismiss(animated: false, completion: {
-                        self.performSegue(withIdentifier: "ShowMovieDetails", sender: sender)
-                    })
-                }
-            })
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if (indexPath.row == collectionView.numberOfItems(inSection: indexPath.section) - 3) {
-            updateNextSet(collectionView: collectionView.tag)
-            DispatchQueue.main.async(execute: collectionView.reloadData)
-        }
-    }
     
     private func updateNextSet(collectionView: Int){
         self.dataSource.fetchDataIn(section: collectionView)
@@ -84,12 +40,49 @@ class MainTableViewController: UITableViewController, UICollectionViewDelegate, 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 160;
     }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if (segue.identifier == "ShowMovieDetails") {
-            if let sender: [String:Any] = sender as? [String : Any] {
-                (segue.destination as! DetailsViewController).prepareData(movie: sender["movie"] as! MovieResponse?, backdrop: sender["backdrop"] as! UIImage?, poster: sender["poster"] as! UIImage?)
-            }
+}
+
+extension MainTableViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let movie = self.dataSource.getMoviesFromSection(collectionView.tag)?[indexPath.row] else {
+            return
         }
+        guard let destination = self.storyboard?.instantiateViewController(withIdentifier: "DetailsViewController") as? DetailsViewController else {
+            return
+        }
+        let alert = UIAlertController(title: nil, message: "", preferredStyle: .alert)
+        alert.deployCustomIndicator()
+        present(alert, animated: true, completion: nil)
+        self.dataSource.loadImages(movie: movie, completion: { backdrop, poster in
+            destination.prepareData(movie: movie, backdrop: backdrop, poster: poster)
+            DispatchQueue.main.async {
+                self.dismiss(animated: false, completion: {
+                    self.navigationController?.pushViewController(destination, animated: true)
+                })
+            }
+        })
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if (indexPath.row == collectionView.numberOfItems(inSection: indexPath.section) - 3) {
+            updateNextSet(collectionView: collectionView.tag)
+            DispatchQueue.main.async(execute: collectionView.reloadData)
+        }
+    }
+}
+
+extension MainTableViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.dataSource.getNumberOfMoviesInSection(collectionView.tag)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MovieCollectionViewCell",
+                                                      for: indexPath) as! MovieCollectionViewCell
+        //let movie = self.dataSource.arrayOfSections[collectionView.tag]?.results[indexPath.row]
+        let movie = self.dataSource.getMoviesFromSection(collectionView.tag)?[indexPath.row]
+        cell.loadData(from: movie, withThumbnail: self.dataSource.getThumbnailForTitle(movie?.title ?? ""))
+        
+        return cell
     }
 }

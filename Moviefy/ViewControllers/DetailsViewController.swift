@@ -41,8 +41,8 @@ class DetailsViewController: UIViewController {
         self.titleLabel.text = movie.title
         self.scoreLabel.text = "Score: " + String(movie.voteAverage) + "/10"
         self.votesLabel.text = "Votes: " + String(movie.voteCount)
-        if (movie.releaseDate != "") {
-            self.dateLabel.text = "Release: " + movie.releaseDate
+        if (movie.releaseDate != nil && movie.releaseDate != "") {
+            self.dateLabel.text = "Release: " + movie.releaseDate! 
         }
         else {
             self.dateLabel.text = "Unreleased"
@@ -54,12 +54,7 @@ class DetailsViewController: UIViewController {
             self.overviewContentLabel.text = movie.overview
         }
     }
-    
-    func prepareImages(backdrop: UIImage?, poster: UIImage?) {
-        self.backdrop = backdrop
-        self.poster = poster
-    }
-        
+            
     func setImages() {
         if let backdrop = self.backdrop {
             self.backdropImage.image = backdrop
@@ -74,13 +69,13 @@ class DetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tabBarController?.tabBar.isHidden = true
+        //self.tabBarController?.tabBar.isHidden = true
         self.setLabels()
         self.setImages()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.tabBarController?.tabBar.isHidden = false
+        //self.tabBarController?.tabBar.isHidden = false
     }
 }
