@@ -10,7 +10,7 @@ import UIKit
 import WebKit
 
 class DetailsViewController: UIViewController {
-    private var movie: MovieResponse?
+    var movie: Movie?
     private var backdrop: UIImage?
     private var poster: UIImage?
     
@@ -22,14 +22,29 @@ class DetailsViewController: UIViewController {
     @IBOutlet var overviewContentLabel: UILabel!
     @IBOutlet var posterImage: UIImageView!
     
-    func prepareData(movie: MovieResponse?, backdrop: UIImage?, poster: UIImage?) {
-        self.movie = movie
-        self.navigationItem.title = movie?.title ?? "No title"
-        self.backdrop = backdrop
-        self.poster = poster
+    func prepareData() {
+        self.navigationItem.title = self.movie?.data.title ?? "No title"
+        self.movie?.loadBackdrop {
+            self.backdrop = self.movie?.backdrop
+            if (self.isViewLoaded) {
+                DispatchQueue.main.async {
+                    self.backdropImage.image = self.backdrop
+                    self.backdropImage.setNeedsDisplay()
+                }
+            }
+        }
+        self.movie?.loadPoster {
+            self.poster = self.movie?.poster
+            if (self.isViewLoaded) {
+                DispatchQueue.main.async {
+                    self.posterImage.image = self.poster
+                    self.posterImage.setNeedsDisplay()
+                }
+            }
+        }
     }
     
-    func setLabels() {
+    func setViews() {
         guard let movie = self.movie else {
             self.titleLabel.text = "Unknown"
             self.scoreLabel.text = "N/A"
@@ -38,40 +53,34 @@ class DetailsViewController: UIViewController {
             self.overviewContentLabel.text = "No overview"
             return
         }
-        self.titleLabel.text = movie.title
-        self.scoreLabel.text = "Score: " + String(movie.voteAverage) + "/10"
-        self.votesLabel.text = "Votes: " + String(movie.voteCount)
-        if (movie.releaseDate != nil && movie.releaseDate != "") {
-            self.dateLabel.text = "Release: " + movie.releaseDate! 
+        self.titleLabel.text = movie.data.title
+        self.scoreLabel.text = "Score: " + String(movie.data.voteAverage) + "/10"
+        self.votesLabel.text = "Votes: " + String(movie.data.voteCount)
+        if (movie.data.releaseDate != nil && movie.data.releaseDate != "") {
+            self.dateLabel.text = "Release: " + movie.data.releaseDate!
         }
         else {
             self.dateLabel.text = "Unreleased"
         }
-        if (movie.overview == "") {
+        if (movie.data.overview == "") {
             self.overviewContentLabel.text = "No overview available."
         }
         else {
-            self.overviewContentLabel.text = movie.overview
+            self.overviewContentLabel.text = movie.data.overview
         }
+        self.backdropImage.image = self.backdrop
+        self.posterImage.image = self.poster
     }
-            
-    func setImages() {
-        if let backdrop = self.backdrop {
-            self.backdropImage.image = backdrop
-        }
-        else {
-            self.backdropImage.image = UIImage(named: "no-image.png")
-        }
-        if let poster = self.poster {
-            self.posterImage.image = poster
-        }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.prepareData()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         //self.tabBarController?.tabBar.isHidden = true
-        self.setLabels()
-        self.setImages()
+        self.setViews()
     }
     
     override func viewWillDisappear(_ animated: Bool) {

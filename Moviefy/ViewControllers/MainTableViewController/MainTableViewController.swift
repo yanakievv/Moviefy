@@ -51,17 +51,8 @@ extension MainTableViewController: UICollectionViewDelegate {
         guard let destination = self.storyboard?.instantiateViewController(withIdentifier: "DetailsViewController") as? DetailsViewController else {
             return
         }
-        let alert = UIAlertController(title: nil, message: "", preferredStyle: .alert)
-        alert.deployCustomIndicator()
-        present(alert, animated: true, completion: nil)
-        /*self.dataSource.loadImages(movie: movie, completion: { backdrop, poster in
-            destination.prepareData(movie: movie, backdrop: backdrop, poster: poster)
-            DispatchQueue.main.async {
-                self.dismiss(animated: false, completion: {
-                    self.navigationController?.pushViewController(destination, animated: true)
-                })
-            }
-        })*/
+        destination.movie = movie
+        self.navigationController?.pushViewController(destination, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
