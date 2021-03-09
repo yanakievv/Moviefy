@@ -67,7 +67,6 @@ extension MainTableViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if (indexPath.row == collectionView.numberOfItems(inSection: indexPath.section) - 3) {
             updateNextSet(collectionView: collectionView.tag)
-            DispatchQueue.main.async(execute: collectionView.reloadData)
         }
     }
 }
