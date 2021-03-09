@@ -72,18 +72,21 @@ class MainTableViewDataSource: NSObject {
         let page = ((arrayOfSections[section]?.count ?? 0) / 20) + 1
         MovieStore().getMovies(from: MovieListEndpoint.allCases[section], page: page, completion: { response in
             if let result = response?.toArrayOfMovies() {
-                self.loadThumbnails(forMovies: result, inSection: section)
                 self.arrayOfSections[section]?.append(contentsOf: result)
+                DispatchQueue.main.async {
+                    self.tableView?.reloadData()
+                    self.loadThumbnails(forMovies: result, inSection: section)
+                }
             }
         })
     }
     
     private func loadThumbnails(forMovies movies: [Movie]?, inSection section: Int) {
         if let movies = movies {
-            let tableViewCell = self.tableView?.cellForRow(at: IndexPath(row: 0, section: section)) as? MainTableViewCell
             for i in 0 ..< movies.count {
                 movies[i].loadThumbnail(completion: {
                     DispatchQueue.main.async {
+                        let tableViewCell = self.tableView?.cellForRow(at: IndexPath(row: 0, section: section)) as? MainTableViewCell
                         tableViewCell?.reloadItems(at: [IndexPath(row: i, section: 0)])
                     }
                 })
