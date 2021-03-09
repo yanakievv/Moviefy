@@ -18,6 +18,16 @@ class Util {
     }()
 }
 
+extension MoviesResponse {
+    func toArrayOfMovies() -> [Movie] {
+        var movies = [Movie]()
+        self.results.forEach { (movieResponse) in
+            movies.append(Movie(withMovieResponse: movieResponse))
+        }
+        return movies
+    }
+}
+
 extension UIButton {
     func toggleClickable(clickable: Bool) -> () {
         if (clickable) {

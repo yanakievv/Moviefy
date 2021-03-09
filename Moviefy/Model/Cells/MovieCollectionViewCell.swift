@@ -13,11 +13,11 @@ class MovieCollectionViewCell: UICollectionViewCell {
     @IBOutlet private var title: UILabel!
     @IBOutlet private var thumbnailImageView: UIImageView!
     
-    func loadData(from movie: MovieResponse?, withThumbnail thumbnail: UIImage?) {
-        if let image = thumbnail {
+    func loadData(from movie: Movie?) {
+        if let image = movie?.thumbnail {
             thumbnailImageView.image = image
         }
-        title.text = movie?.title ?? ""
+        title.text = movie?.data.title ?? ""
     }
     
 }

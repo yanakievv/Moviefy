@@ -13,9 +13,9 @@ class SearchMovieCollectionViewCell: UICollectionViewCell {
     @IBOutlet var backdropImage: UIImageView!
     @IBOutlet var titleLabel: UILabel!
     
-    func loadData(fromMovie movie: MovieResponse, withImage image: UIImage?) {
-        self.titleLabel.text = movie.title
-        if let img = image {
+    func loadData(fromMovie movie: Movie) {
+        self.titleLabel.text = movie.data.title
+        if let img = movie.backdrop {
             self.backdropImage.image = img
         }
     }

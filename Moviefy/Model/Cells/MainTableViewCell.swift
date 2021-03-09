@@ -22,5 +22,9 @@ class MainTableViewCell: UITableViewCell {
         collectionView.tag = section
         collectionView.reloadData()
     }
+    
+    func reloadItems(at indexPath: [IndexPath]) {
+        self.collectionView.reloadItems(at: indexPath)
+    }
 
 }

@@ -70,8 +70,6 @@ class MovieStore: MovieService {
         }.resume()
     }
     
-    
-        
     private let APIKey = "258b74537c6968d6d22a734e2994e3ee"
     private let baseURL = "https://api.themoviedb.org/3"
     private let imageBaseURL = "https://image.tmdb.org/t/p/"

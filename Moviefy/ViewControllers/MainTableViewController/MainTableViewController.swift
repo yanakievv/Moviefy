@@ -19,6 +19,7 @@ class MainTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tableView.dataSource = self.dataSource
+        self.dataSource.tableView = self.tableView
         self.dataSource.fetchData(completion: {
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -53,14 +54,14 @@ extension MainTableViewController: UICollectionViewDelegate {
         let alert = UIAlertController(title: nil, message: "", preferredStyle: .alert)
         alert.deployCustomIndicator()
         present(alert, animated: true, completion: nil)
-        self.dataSource.loadImages(movie: movie, completion: { backdrop, poster in
+        /*self.dataSource.loadImages(movie: movie, completion: { backdrop, poster in
             destination.prepareData(movie: movie, backdrop: backdrop, poster: poster)
             DispatchQueue.main.async {
                 self.dismiss(animated: false, completion: {
                     self.navigationController?.pushViewController(destination, animated: true)
                 })
             }
-        })
+        })*/
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -79,9 +80,9 @@ extension MainTableViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MovieCollectionViewCell",
                                                       for: indexPath) as! MovieCollectionViewCell
-        //let movie = self.dataSource.arrayOfSections[collectionView.tag]?.results[indexPath.row]
+
         let movie = self.dataSource.getMoviesFromSection(collectionView.tag)?[indexPath.row]
-        cell.loadData(from: movie, withThumbnail: self.dataSource.getThumbnailForTitle(movie?.title ?? ""))
+        cell.loadData(from: movie)
         
         return cell
     }

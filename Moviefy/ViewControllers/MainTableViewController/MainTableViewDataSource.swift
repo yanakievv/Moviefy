@@ -10,127 +10,85 @@ import UIKit
 
 class MainTableViewDataSource: NSObject {
     
-    private var popular: MoviesResponse?
-    private var trending: MoviesResponse?
-    private var topRated: MoviesResponse?
-    private var upcoming: MoviesResponse?
+    var tableView: UITableView?
     
-    private var arrayOfSections = [MoviesResponse?]()
-    private var thumbnailsForTitle: [String : UIImage] = [:]
+    private var popular: [Movie]?
+    private var trending: [Movie]?
+    private var topRated: [Movie]?
+    private var upcoming: [Movie]?
     
-    func getMoviesFromSection(_ section: Int) -> [MovieResponse]? {
+    private var arrayOfSections = [[Movie]?]()
+    
+    func getMoviesFromSection(_ section: Int) -> [Movie]? {
         if (section >= 0 && section < self.arrayOfSections.count) {
-            return self.arrayOfSections[section]?.results
+            return self.arrayOfSections[section]
         }
         return nil
     }
     
     func getNumberOfMoviesInSection(_ section: Int) -> Int {
         if (section >= 0 && section < self.arrayOfSections.count) {
-            return self.arrayOfSections[section]?.results.count ?? 0
+            return self.arrayOfSections[section]?.count ?? 0
         }
         return 0
     }
-    
-    func getThumbnailForTitle(_ title: String) -> UIImage? {
-        return thumbnailsForTitle[title]
-    }
-    
+        
     func fetchData(completion: @escaping () -> ()) {
         MovieStore().getMovies(from: MovieListEndpoint.popular, completion: { response in
             if let response = response {
-                self.loadThumbnails(forMovies: response.results)
-                self.popular = response
+                self.popular = response.toArrayOfMovies()
+                self.loadThumbnails(forMovies: self.popular, inSection: 0)
                 self.arrayOfSections.append(self.popular)
                 completion()
             }
         })
         MovieStore().getMovies(from: MovieListEndpoint.nowPlaying, completion: { response in
             if let response = response {
-                self.loadThumbnails(forMovies: response.results)
-                self.trending = response
+                self.trending = response.toArrayOfMovies()
+                self.loadThumbnails(forMovies: self.trending, inSection: 1)
                 self.arrayOfSections.append(self.trending)
                 completion()
             }
         })
         MovieStore().getMovies(from: MovieListEndpoint.topRated, completion: { response in
             if let response = response {
-                self.loadThumbnails(forMovies: response.results)
-                self.topRated = response
+                self.topRated = response.toArrayOfMovies()
+                self.loadThumbnails(forMovies: self.topRated, inSection: 2)
                 self.arrayOfSections.append(self.topRated)
                 completion()
             }
         })
         MovieStore().getMovies(from: MovieListEndpoint.upcoming, completion: { response in
             if let response = response {
-                self.loadThumbnails(forMovies: response.results)
-                self.upcoming = response
+                self.upcoming = response.toArrayOfMovies()
+                self.loadThumbnails(forMovies: self.upcoming, inSection: 3)
                 self.arrayOfSections.append(self.upcoming)
                 completion()
             }
         })
     }
-    
-
-    
+        
     func fetchDataIn(section: Int) {
-        let page = ((arrayOfSections[section]?.results.count ?? 0) / 20) + 1
+        let page = ((arrayOfSections[section]?.count ?? 0) / 20) + 1
         MovieStore().getMovies(from: MovieListEndpoint.allCases[section], page: page, completion: { response in
-            if let response = response {
-                self.loadThumbnails(forMovies: response.results)
-                self.arrayOfSections[section]?.results.append(contentsOf: response.results)
+            if let result = response?.toArrayOfMovies() {
+                self.loadThumbnails(forMovies: result, inSection: section)
+                self.arrayOfSections[section]?.append(contentsOf: result)
             }
         })
     }
     
-    private func loadThumbnails(forMovies movies: [MovieResponse]) {
-        movies.forEach({ self.loadThumbnail(movie: $0) })
-    }
-    
-    private func loadThumbnail(movie: MovieResponse) {
-        if let backdropPath = movie.backdropPath {
-            MovieStore().getImage(path: backdropPath, size: MovieImageSize.small, completion: {img in
-                if let img = img {
-                    self.thumbnailsForTitle[movie.title] = UIImage(data: img)
-                }
-                else {
-                    self.thumbnailsForTitle[movie.title] = UIImage(named: "no-image.png")
-                }
-            })
+    private func loadThumbnails(forMovies movies: [Movie]?, inSection section: Int) {
+        if let movies = movies {
+            let tableViewCell = self.tableView?.cellForRow(at: IndexPath(row: 0, section: section)) as? MainTableViewCell
+            for i in 0 ..< movies.count {
+                movies[i].loadThumbnail(completion: {
+                    DispatchQueue.main.async {
+                        tableViewCell?.reloadItems(at: [IndexPath(row: i, section: 0)])
+                    }
+                })
+            }
         }
-        else {
-            self.thumbnailsForTitle[movie.title] = UIImage(named: "no-image.png")
-        }
-    }
-    
-    func loadImages(movie: MovieResponse, completion: @escaping (UIImage?, UIImage?) -> ()) {
-        var backdrop: UIImage?
-        var poster: UIImage?
-        if let backdropPath = movie.backdropPath {
-            MovieStore().getImage(path: backdropPath, size: MovieImageSize.big, completion: {img in
-                if let img = img {
-                    backdrop = UIImage(data: img)
-                }
-                else {
-                    backdrop = UIImage(named: "no-image.png")
-                }
-            })
-        }
-        else {
-            backdrop = UIImage(named: "no-image.png")
-        }
-        if let posterPath = movie.posterPath {
-            MovieStore().getImage(path: posterPath, size: MovieImageSize.original, completion: {img in
-                if let img = img {
-                    poster = UIImage(data: img)
-                }
-                completion(backdrop, poster)
-            })
-        }
-        else {
-            completion(backdrop, poster)
-        }
-        // no need to set poster to the "no-image" image, it will just show up as blank and should not mess up the layout
     }
 }
 
@@ -150,11 +108,11 @@ extension MainTableViewDataSource: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch (section) {
-        case 0: return "Popular"
-        case 1: return "Trending"
-        case 2: return "Top Rated"
-        case 3: return "Upcoming"
-        default: return "Other"
+            case 0: return "Popular"
+            case 1: return "Trending"
+            case 2: return "Top Rated"
+            case 3: return "Upcoming"
+            default: return "Other"
         }
     }
     

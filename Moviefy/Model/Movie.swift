@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class MovieResponse: Codable {
+struct MovieResponse: Codable {
     
     let id: Int
     let title: String
@@ -32,40 +32,75 @@ class MovieResponse: Codable {
     }
 }
 
-struct MoviesResponse: Codable {
+class MoviesResponse: Codable {
     
     var results: [MovieResponse]
     let page: Int
     let totalPages: Int
     let totalResults: Int
     
-    /*enum CodingKeys: String, CodingKey {
-        case page = "page"
-        case results = "results"
-        case totalPages = "total_pages"
-        case totalResults = "total_results"
-        
-    }*/
-    
-    /*init(results: [MovieResponse]) {
-        self.results = [MovieResponse]()
-        for i in results {
-            self.results.append(i)
-        }
-    }*/
-    
 }
 
-enum MovieKey: String, CaseIterable {
-    case id = "id"
-    case title = "title"
-    case backdropPath = "backdrop_path"
-    case posterPath = "poster_path"
-    case overview = "overview"
-    case voteAverage = "vote_average"
-    case voteCount = "vote_count"
-    case releaseDate = "release_date"
+class Movie {
     
+    let data: MovieResponse
+    var thumbnail: UIImage? = nil
+    var backdrop: UIImage? = nil
+    var poster: UIImage? = nil
+    
+    init(withMovieResponse movie: MovieResponse) {
+        self.data = movie
+    }
+    
+    func loadThumbnail(completion: @escaping () -> ()) {
+        if let backdropPath = data.backdropPath {
+            MovieStore().getImage(path: backdropPath, size: MovieImageSize.small, completion: {img in
+                if let img = img {
+                    self.thumbnail = UIImage(data: img)
+                }
+                else {
+                    self.thumbnail = UIImage(named: "no-image.png")
+                }
+                completion()
+            })
+        }
+        else {
+            self.thumbnail = UIImage(named: "no-image.png")
+            completion()
+        }
+    }
+    func loadBackdrop(completion: @escaping () -> ()) {
+        if let backdropPath = data.backdropPath {
+            MovieStore().getImage(path: backdropPath, size: MovieImageSize.big, completion: {img in
+                if let img = img {
+                    self.backdrop = UIImage(data: img)
+                }
+                else {
+                    self.backdrop = UIImage(named: "no-image.png")
+                }
+                completion()
+            })
+        }
+        else {
+            self.backdrop = UIImage(named: "no-image.png")
+            completion()
+        }
+    }
+    func loadPoster(completion: @escaping () -> ()) {
+        
+        if let posterPath = data.posterPath {
+            MovieStore().getImage(path: posterPath, size: MovieImageSize.original, completion: {img in
+                if let img = img {
+                    self.poster = UIImage(data: img)
+                }
+                completion()
+            })
+        }
+        else {
+            completion()
+        }
+        // no need to set poster to the "no-image" image, it will just show up as blank and should not mess up the layout
+    }
 }
 
 
