@@ -216,16 +216,6 @@
                                     <constraint firstItem="JN4-FU-pbL" firstAttribute="top" secondItem="X44-ad-Tqf" secondAttribute="top" id="oRd-YY-p8q"/>
                                 </constraints>
                             </scrollView>
-                            <tabBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wYG-od-iQZ">
-                                <rect key="frame" x="0.0" y="813" width="414" height="49"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <items>
-                                    <tabBarItem systemItem="favorites" id="h3z-qq-NFD"/>
-                                    <tabBarItem title="Item" id="8q7-X3-CDf" userLabel="She"/>
-                                    <tabBarItem systemItem="more" id="kuU-CR-FA4"/>
-                                </items>
-                            </tabBar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>

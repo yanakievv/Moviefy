@@ -8,8 +8,9 @@
 
 import Foundation
 import UIKit
+import CoreData
 
-struct MovieResponse: Codable {
+class MovieResponse: Codable {
     
     let id: Int
     let title: String
@@ -102,5 +103,6 @@ class Movie {
         // no need to set poster to the "no-image" image, it will just show up as blank and should not mess up the layout
     }
 }
+
 
 

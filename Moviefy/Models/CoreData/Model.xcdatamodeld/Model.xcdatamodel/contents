@@ -3,7 +3,6 @@
     <entity name="MovieModel" representedClassName="MovieModel" syncable="YES" codeGenerationType="class">
         <attribute name="backdropPath" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="markedAs" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="overview" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="posterPath" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="releaseDate" optional="YES" attributeType="String" syncable="YES"/>
@@ -12,6 +11,6 @@
         <attribute name="voteCount" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <elements>
-        <element name="MovieModel" positionX="-45" positionY="0" width="128" height="180"/>
+        <element name="MovieModel" positionX="-54" positionY="-9" width="128" height="165"/>
     </elements>
 </model>
