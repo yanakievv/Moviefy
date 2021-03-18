@@ -79,12 +79,10 @@ class DetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //self.tabBarController?.tabBar.isHidden = true
         self.setViews()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        //self.tabBarController?.tabBar.isHidden = false
     }
 }

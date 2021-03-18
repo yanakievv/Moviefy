@@ -11,13 +11,12 @@ import UIKit
 import CoreData
 
 class CoreDataMovieController {
-    
+   
     private static let entityName = "MovieModel"
     
-    private class func getContext() -> NSManagedObjectContext?
-    {
+    private class func getContext() -> NSManagedObjectContext? {
         let delegate = UIApplication.shared.delegate as? AppDelegate
-        return (delegate?.persistentContainer.viewContext)
+        return delegate?.persistentContainer.viewContext
     }
     
     class func saveMovie(_ movie: Movie, markedAs endpoint: MovieSectionEndpoint) {
@@ -35,6 +34,8 @@ class CoreDataMovieController {
             newMovie.setValue(movie.data.voteAverage, forKey: "voteAverage")
             newMovie.setValue(movie.data.voteCount, forKey: "voteCount")
             newMovie.setValue(movie.data.releaseDate, forKey: "releaseDate")
+            newMovie.setValue(Util.getCurrentDateAsString(withFormat: "yyyy-MM-dd"), forKey: "dateAdded")
+            newMovie.setValue(movie.backdrop?.pngData(), forKey: "thumbnail")
             newMovie.setValue(endpoint.rawValue, forKey: "markedAs")
             do {
                 try context.save()
@@ -54,6 +55,7 @@ class CoreDataMovieController {
             return
         }
         if let entity = NSEntityDescription.entity(forEntityName: self.entityName, in: context) {
+            let currentDate = Util.getCurrentDateAsString(withFormat: "yyyy-MM-dd")
             for movie in movies {
                 let newMovie = NSManagedObject(entity: entity, insertInto: context)
                 newMovie.setValue(movie.data.id, forKey: "id")
@@ -64,6 +66,8 @@ class CoreDataMovieController {
                 newMovie.setValue(movie.data.voteAverage, forKey: "voteAverage")
                 newMovie.setValue(movie.data.voteCount, forKey: "voteCount")
                 newMovie.setValue(movie.data.releaseDate, forKey: "releaseDate")
+                newMovie.setValue(currentDate, forKey: "dateAdded")
+                newMovie.setValue(movie.backdrop?.pngData(), forKey: "thumbnail")
                 newMovie.setValue(endpoint.rawValue, forKey: "markedAs")
             }
             do {
@@ -78,7 +82,7 @@ class CoreDataMovieController {
         }
     }
     
-    class func fetchMovies(fromEndpoint endpoint: MovieSectionEndpoint) -> [MovieModel] {
+    class func fetchMovies(fromEndpoint endpoint: MovieSectionEndpoint? = nil) -> [MovieModel] {
         guard let context = CoreDataMovieController.getContext() else {
             NSLog("E: CoreData -- getContext() returned nil")
             return [MovieModel]()
@@ -86,7 +90,9 @@ class CoreDataMovieController {
         
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: self.entityName)
         request.returnsObjectsAsFaults = false
-        request.predicate = NSPredicate(format: "markedAs = %@", endpoint.rawValue)
+        if let section = endpoint?.rawValue {
+            request.predicate = NSPredicate(format: "markedAs = %@", section)
+        }
         
         do {
             let result = try context.fetch(request)
@@ -177,6 +183,7 @@ class CoreDataMovieController {
 
 enum MovieSectionEndpoint: String, CaseIterable {
     case favourite = "Favourite"
-    case toWatch = "ToWatch"
     case watched = "Watched"
+    case toWatch = "To-Watch"
+
 }

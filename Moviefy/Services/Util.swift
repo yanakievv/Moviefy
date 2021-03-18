@@ -16,6 +16,13 @@ class Util {
         jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
         return jsonDecoder
     }()
+    
+    class func getCurrentDateAsString(withFormat format: String) -> String {
+        let date = Date()
+        let df = DateFormatter()
+        df.dateFormat = format
+        return df.string(from: date)
+    }
 }
 
 extension MoviesResponse {

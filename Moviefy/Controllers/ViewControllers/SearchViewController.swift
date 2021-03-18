@@ -31,17 +31,6 @@ class SearchViewController: UIViewController {
         MovieStore().searchMovie(query: query, page: self.page, completion: { response in
             if let result = response?.toArrayOfMovies() {
                 self.movies.append(contentsOf: result)
-                
-                //FOR TESTING PURPOSES ONLY
-                DispatchQueue.main.async {
-                    CoreDataMovieController.deleteAllRecords(fromEndpoint: nil)
-                    CoreDataMovieController.saveMovies(self.movies, markedAs: MovieSectionEndpoint.favourite)
-                    for i in CoreDataMovieController.fetchMovies(fromEndpoint: MovieSectionEndpoint.favourite) {
-                        NSLog("D: \(i.title ?? "wat")")
-                    }
-                }
-                //FOR TESTING PURPOSES ONLY
-                
                 completion()
                 self.loadThumbnails(forMovies: result)
                 
@@ -57,6 +46,15 @@ class SearchViewController: UIViewController {
                 }
             })
         }
+        //FOR TESTING PURPOSES ONLY
+        DispatchQueue.main.async {
+            CoreDataMovieController.deleteAllRecords(fromEndpoint: nil)
+            CoreDataMovieController.saveMovies(self.movies, markedAs: MovieSectionEndpoint.favourite)
+            for i in CoreDataMovieController.fetchMovies(fromEndpoint: MovieSectionEndpoint.favourite) {
+                NSLog("D: \(i.title ?? "wat")")
+            }
+        }
+        //FOR TESTING PURPOSES ONLY
         // using the backdrop images for thumbnails in this case, because the thumbnails are too small for the view
     }
     
