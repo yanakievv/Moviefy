@@ -9,10 +9,19 @@
 import UIKit
 
 class LocalDataCollectionViewDataSource: NSObject {
-    var movies = [MovieModel]()
-        
+    private var movies = [MovieModel]()
+    var endpoint: MovieSectionEndpoint?
+    
+    func getMovie(atIndex index: Int) -> MovieModel? {
+        if (index >= 0 && index < movies.count) {
+            return movies[index]
+        }
+        return nil
+    }
+    
     func fetchData(fromSection endpoint: MovieSectionEndpoint? = nil) {
-        self.movies = CoreDataMovieController.fetchMovies(fromEndpoint: endpoint)
+        self.movies = CoreDataManager.fetchMovies(fromEndpoint: endpoint)
+        self.endpoint = endpoint
     }
 }
 extension LocalDataCollectionViewDataSource: UICollectionViewDataSource {
@@ -23,10 +32,10 @@ extension LocalDataCollectionViewDataSource: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LocalDataCollectionViewCell",
                                                       for: indexPath) as! LocalDataCollectionViewCell
-        
-        let movie = self.movies[indexPath.row]
-        cell.loadData(from: movie)
-        
+        if (indexPath.row < movies.count) {
+            let movie = self.movies[indexPath.row]
+            cell.loadData(from: movie)
+        }
         return cell
     }
     

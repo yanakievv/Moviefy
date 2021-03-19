@@ -8,8 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D20E0FB42603A5C7006ACAD1 /* PopupMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D20E0FB32603A5C7006ACAD1 /* PopupMenuTableViewCell.swift */; };
-		D20E0FB62603AF8A006ACAD1 /* SelfSizingTableVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = D20E0FB52603AF8A006ACAD1 /* SelfSizingTableVIew.swift */; };
-		D2153F5425F8E6D500A6DC99 /* CoreDataMovieController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2153F5325F8E6D500A6DC99 /* CoreDataMovieController.swift */; };
+		D2153F5425F8E6D500A6DC99 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2153F5325F8E6D500A6DC99 /* CoreDataManager.swift */; };
 		D22A307E25DC05C900F2300D /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D22A307D25DC05C900F2300D /* SearchViewController.swift */; };
 		D22A308025DC066700F2300D /* SearchMovieCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D22A307F25DC066700F2300D /* SearchMovieCollectionViewCell.swift */; };
 		D23C6E2D25FFD82D008844B9 /* LocalDataCollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23C6E2C25FFD82D008844B9 /* LocalDataCollectionViewDataSource.swift */; };
@@ -55,8 +54,7 @@
 
 /* Begin PBXFileReference section */
 		D20E0FB32603A5C7006ACAD1 /* PopupMenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupMenuTableViewCell.swift; sourceTree = "<group>"; };
-		D20E0FB52603AF8A006ACAD1 /* SelfSizingTableVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfSizingTableVIew.swift; sourceTree = "<group>"; };
-		D2153F5325F8E6D500A6DC99 /* CoreDataMovieController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMovieController.swift; sourceTree = "<group>"; };
+		D2153F5325F8E6D500A6DC99 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		D22A307D25DC05C900F2300D /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		D22A307F25DC066700F2300D /* SearchMovieCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMovieCollectionViewCell.swift; sourceTree = "<group>"; };
 		D23C6E2C25FFD82D008844B9 /* LocalDataCollectionViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalDataCollectionViewDataSource.swift; sourceTree = "<group>"; };
@@ -125,7 +123,7 @@
 		D250585625D2EEC900F218CB /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				D2153F5325F8E6D500A6DC99 /* CoreDataMovieController.swift */,
+				D2153F5325F8E6D500A6DC99 /* CoreDataManager.swift */,
 				D250585725D2EEE100F218CB /* MovieService.swift */,
 				D250585925D2F3F600F218CB /* MovieStore.swift */,
 				D250585D25D2F84900F218CB /* Util.swift */,
@@ -226,7 +224,6 @@
 			children = (
 				D2D7A3DB2602A72700BCAB49 /* PopupMenuTableViewDataSource.swift */,
 				D2D7A3DD2602A7C100BCAB49 /* PopupMenuTableViewDelegate.swift */,
-				D20E0FB52603AF8A006ACAD1 /* SelfSizingTableVIew.swift */,
 			);
 			path = PopupMenu;
 			sourceTree = "<group>";
@@ -399,11 +396,10 @@
 				D2BDADF125D17F4200525158 /* ViewController.swift in Sources */,
 				D22A307E25DC05C900F2300D /* SearchViewController.swift in Sources */,
 				D2FC381A25E9221E000CFDB4 /* MainTableViewDataSource.swift in Sources */,
-				D2153F5425F8E6D500A6DC99 /* CoreDataMovieController.swift in Sources */,
+				D2153F5425F8E6D500A6DC99 /* CoreDataManager.swift in Sources */,
 				D2D7A3DC2602A72700BCAB49 /* PopupMenuTableViewDataSource.swift in Sources */,
 				D2BDAE2825D1811F00525158 /* MovieCollectionViewCell.swift in Sources */,
 				D2BDADEF25D17F4200525158 /* AppDelegate.swift in Sources */,
-				D20E0FB62603AF8A006ACAD1 /* SelfSizingTableVIew.swift in Sources */,
 				D2DDAEF825FF9F0600F2719F /* LocalDataViewController.swift in Sources */,
 				D2D7A3DE2602A7C100BCAB49 /* PopupMenuTableViewDelegate.swift in Sources */,
 				D250585E25D2F84900F218CB /* Util.swift in Sources */,

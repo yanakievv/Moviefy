@@ -46,15 +46,6 @@ class SearchViewController: UIViewController {
                 }
             })
         }
-        //FOR TESTING PURPOSES ONLY
-        DispatchQueue.main.async {
-            CoreDataMovieController.deleteAllRecords(fromEndpoint: nil)
-            CoreDataMovieController.saveMovies(self.movies, markedAs: MovieSectionEndpoint.favourite)
-            for i in CoreDataMovieController.fetchMovies(fromEndpoint: MovieSectionEndpoint.favourite) {
-                NSLog("D: \(i.title ?? "wat")")
-            }
-        }
-        //FOR TESTING PURPOSES ONLY
         // using the backdrop images for thumbnails in this case, because the thumbnails are too small for the view
     }
     

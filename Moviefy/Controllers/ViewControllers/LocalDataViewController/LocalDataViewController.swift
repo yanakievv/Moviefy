@@ -14,32 +14,36 @@ class LocalDataViewController: UIViewController {
     @IBOutlet var categoriesButton: UIBarButtonItem!
     @IBOutlet var categoryLabel: UILabel!
     
-    let dataSource = LocalDataCollectionViewDataSource()
+    let collectionViewDataSource = LocalDataCollectionViewDataSource()
     let transparentView = UIView()
     
-    var category = "Favourite"
-    let categoriesTableView = SelfSizingTableView()
+    var category = "All"
+    let categoriesTableView = UITableView()
     let categoriesTableViewDelegate = PopupMenuTableViewDelegate()
     let categoriesTableViewDataSource = PopupMenuTableViewDataSource()
     
     var popupShown = false
     
+    private func getHeightBySize(_ size: CGSize) -> CGFloat {
+        if (size.height < size.width) {
+            return UIScreen.main.bounds.height / 2.36
+        }
+        else {
+            return UIScreen.main.bounds.height / 4.20
+        }
+    }
+    
     private var tableViewFrame: CGRect {
-        return CGRect(x: self.view.frame.origin.x + self.view.frame.width - 200, y: self.view.frame.origin.y, width: 200, height: 220)
+        return CGRect(x: self.view.frame.origin.x + self.view.frame.width - 200, y: self.view.frame.origin.y, width: 200, height: self.getHeightBySize(self.view.frame.size))
     }
     
     private func addTransparentView() {
-        if (self.popupShown) {
-            self.removeTransparentView()
-            return
-        }
         self.view.addSubview(self.transparentView)
         transparentView.translatesAutoresizingMaskIntoConstraints = false
         let attributes: [NSLayoutConstraint.Attribute] = [.top, .bottom, .right, .left]
         NSLayoutConstraint.activate(attributes.map {
             NSLayoutConstraint(item: transparentView, attribute: $0, relatedBy: .equal, toItem: view.superview, attribute: $0, multiplier: 1, constant: 0)
         })
-
 
         self.categoriesTableView.frame = CGRect(x: self.view.frame.origin.x + self.view.frame.width - 200, y: self.view.frame.origin.y, width: 200, height: 0)
         self.view.addSubview(self.categoriesTableView)
@@ -66,7 +70,7 @@ class LocalDataViewController: UIViewController {
     
     @objc func changeCategory(_ notification: NSNotification) {
         if let target = notification.userInfo?["indexPath"] as? IndexPath {
-            self.dataSource.fetchData(fromSection: MovieSectionEndpoint.allCases[target.row])
+            self.collectionViewDataSource.fetchData(fromSection: MovieSectionEndpoint.allCases[target.row])
             self.collectionView.reloadData()
             self.category = MovieSectionEndpoint.allCases[target.row].rawValue
             self.categoryLabel.text = self.category
@@ -74,16 +78,22 @@ class LocalDataViewController: UIViewController {
         }
     }
     
+    @objc func refreshCollectionView() {
+        self.collectionViewDataSource.fetchData(fromSection: self.collectionViewDataSource.endpoint)
+        self.collectionView.reloadData()
+    }
+    
     private func setupTableView() {
         self.categoriesTableView.dataSource = self.categoriesTableViewDataSource
         self.categoriesTableView.delegate = self.categoriesTableViewDelegate
         self.categoriesTableView.register(PopupMenuTableViewCell.self, forCellReuseIdentifier: "PopupMenuTableViewCell")
+        self.categoriesTableView.alwaysBounceVertical = false
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.collectionView.dataSource = self.dataSource
-        self.dataSource.fetchData(fromSection: nil)
+        self.collectionView.dataSource = self.collectionViewDataSource
+        self.collectionViewDataSource.fetchData(fromSection: nil)
         self.collectionView.delegate = self
     }
     
@@ -92,29 +102,36 @@ class LocalDataViewController: UIViewController {
         self.setupTableView()
         self.categoryLabel.text = self.category
         NotificationCenter.default.addObserver(self, selector: #selector(changeCategory), name: NSNotification.Name(rawValue: "ChangeCategory"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshCollectionView), name: NSNotification.Name(rawValue: "RefreshCollectionView"), object: nil)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        self.categoriesTableView.frame = CGRect(x: self.view.frame.origin.x + size.width - 200, y: self.view.frame.origin.y, width: 200, height: 220)
+        self.removeTransparentView()
     }
     
     @IBAction func onTapCategoriesButton(_ sender: Any) {
-        self.addTransparentView()
+        if (self.popupShown) {
+            self.removeTransparentView()
+        }
+        else {
+            self.addTransparentView()
+        }
     }
+
 }
 
 extension LocalDataViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        /*guard let movie = self.dataSource.getMoviesFromSection(collectionView.tag)?[indexPath.row] else {
+        guard let movieModel = self.collectionViewDataSource.getMovie(atIndex: indexPath.row) else {
             return
         }
         guard let destination = self.storyboard?.instantiateViewController(withIdentifier: "DetailsViewController") as? DetailsViewController else {
             return
         }
-        destination.movie = movie
-        self.navigationController?.pushViewController(destination, animated: true)*/
+        destination.movie = Movie(withMovieModel: movieModel)
+        self.navigationController?.pushViewController(destination, animated: true)
     }
-    
 }
+
 

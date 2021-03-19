@@ -55,6 +55,9 @@ class Movie {
     
     init(withMovieModel movie: MovieModel) {
         self.data = MovieResponse(id: Int(truncatingIfNeeded: movie.id), title: movie.title, backdropPath: movie.backdropPath, posterPath: movie.posterPath, overview: movie.overview, voteAverage: movie.voteAverage, voteCount: Int(truncatingIfNeeded: movie.voteCount), releaseDate: movie.releaseDate)
+        if let backdrop = movie.thumbnail {
+            self.backdrop = UIImage(data: backdrop)
+        }
     }
     
     func loadThumbnail(completion: @escaping () -> ()) {

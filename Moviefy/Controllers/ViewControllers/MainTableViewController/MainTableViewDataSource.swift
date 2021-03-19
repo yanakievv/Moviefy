@@ -34,38 +34,44 @@ class MainTableViewDataSource: NSObject {
     }
         
     func fetchData(completion: @escaping () -> ()) {
+        let semCompleted = AtomicInteger()
         MovieStore().getMovies(from: MovieListEndpoint.popular, completion: { response in
             if let response = response {
                 self.popular = response.toArrayOfMovies()
                 self.loadThumbnails(forMovies: self.popular, inSection: 0)
                 self.arrayOfSections.append(self.popular)
-                completion()
             }
+            semCompleted.increment()
         })
         MovieStore().getMovies(from: MovieListEndpoint.nowPlaying, completion: { response in
             if let response = response {
                 self.trending = response.toArrayOfMovies()
                 self.loadThumbnails(forMovies: self.trending, inSection: 1)
                 self.arrayOfSections.append(self.trending)
-                completion()
             }
+            semCompleted.increment()
         })
         MovieStore().getMovies(from: MovieListEndpoint.topRated, completion: { response in
             if let response = response {
                 self.topRated = response.toArrayOfMovies()
                 self.loadThumbnails(forMovies: self.topRated, inSection: 2)
                 self.arrayOfSections.append(self.topRated)
-                completion()
             }
+            semCompleted.increment()
         })
         MovieStore().getMovies(from: MovieListEndpoint.upcoming, completion: { response in
             if let response = response {
                 self.upcoming = response.toArrayOfMovies()
                 self.loadThumbnails(forMovies: self.upcoming, inSection: 3)
                 self.arrayOfSections.append(self.upcoming)
-                completion()
             }
+            semCompleted.increment()
         })
+        
+        let deadline = Date.timeIntervalSinceReferenceDate + 2
+        while (semCompleted.get() < 4 && Date.timeIntervalSinceReferenceDate < deadline) {}
+        NSLog("URL: Done in \(deadline - Date.timeIntervalSinceReferenceDate) seconds. Responses loaded: \(semCompleted.get())")
+        completion()
     }
         
     func fetchDataIn(section: Int) {

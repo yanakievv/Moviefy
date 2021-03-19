@@ -22,6 +22,43 @@ class DetailsViewController: UIViewController {
     @IBOutlet var overviewContentLabel: UILabel!
     @IBOutlet var posterImage: UIImageView!
     
+    @IBOutlet var favouriteImage: UIImageView!
+    @IBOutlet var toWatchImage: UIImageView!
+    @IBOutlet var watchedImage: UIImageView!
+    
+    func setTapGestureRecognizers() {
+        self.favouriteImage.addTapGestureRecognizer {
+            if let movie = self.movie {
+                CoreDataManager.saveMovie(movie, markedAs: MovieSectionEndpoint.favourite)
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "RefreshCollectionView"), object: nil)
+                NSLog("*Button animation playing to inform user the button worked*")
+            }
+            else {
+                NSLog("*Button animation playing to inform user the button did NOT work*")
+            }
+        }
+        self.toWatchImage.addTapGestureRecognizer {
+            if let movie = self.movie {
+                CoreDataManager.saveMovie(movie, markedAs: MovieSectionEndpoint.toWatch)
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "RefreshCollectionView"), object: nil)
+                NSLog("*Button animation playing to inform user the button worked*")
+            }
+            else {
+                NSLog("*Button animation playing to inform user the button did NOT work*")
+            }
+        }
+        self.watchedImage.addTapGestureRecognizer {
+            if let movie = self.movie {
+                CoreDataManager.saveMovie(movie, markedAs: MovieSectionEndpoint.watched)
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "RefreshCollectionView"), object: nil)
+                NSLog("*Button animation playing to inform user the button worked*")
+            }
+            else {
+                NSLog("*Button animation playing to inform user the button did NOT work*")
+            }
+        }
+    }
+    
     func prepareData() {
         self.navigationItem.title = self.movie?.data.title ?? "No title"
         self.movie?.loadBackdrop {
@@ -80,9 +117,12 @@ class DetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setViews()
+        self.setTapGestureRecognizers()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
     }
+    
+    
 }
