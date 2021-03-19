@@ -94,6 +94,7 @@ class LocalDataViewController: UIViewController {
         super.viewWillAppear(animated)
         self.collectionView.dataSource = self.collectionViewDataSource
         self.collectionViewDataSource.fetchData(fromSection: nil)
+        self.category = "All"
         self.collectionView.delegate = self
     }
     
