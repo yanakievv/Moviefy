@@ -11,7 +11,6 @@ import UIKit
 
 protocol MovieService {
     func getMovies(from endpoint: MovieListEndpoint, page: Int, completion: @escaping (MoviesResponse?) -> ())
-    func getMovie(id: Int, completion: @escaping (MovieResponse?) -> ())
     func searchMovie(query: String, page: Int, completion: @escaping (MoviesResponse?) -> ())
     func getImage(path: String, size: MovieImageSize, completion: @escaping (Data?) -> ())
 }

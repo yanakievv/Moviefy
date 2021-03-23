@@ -10,10 +10,10 @@ import Foundation
 import UIKit
 class PopupMenuTableViewDataSource/* now that's a long name*/: NSObject, UITableViewDataSource {
     
-    let categories = ["Favourite", "Watched", "To-Watch"]
+    let categories = ["All", "Favourite", "Watched", "To-Watch"]
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return 4
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

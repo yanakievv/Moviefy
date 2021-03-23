@@ -31,12 +31,7 @@ class MovieStore: MovieService {
             }
         })
     }
-    
-    func getMovie(id: Int, completion: @escaping (MovieResponse?) -> ()) {
-        //TODO
-        return
-    }
-    
+        
     func searchMovie(query: String, page: Int = 1, completion: @escaping (MoviesResponse?) -> ()) {
         guard let url = URL(string: "\(baseURL)/search/movie") else {
             NSLog("E: func searchMovie url error")
@@ -95,7 +90,7 @@ class MovieStore: MovieService {
         }
     }
     
-    private func loadURL(url: URL, params: [String:String]? = nil, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
+    /* private Commented out for Unit testing access. */ func loadURL(url: URL, params: [String:String]? = nil, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
         guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             return
         }

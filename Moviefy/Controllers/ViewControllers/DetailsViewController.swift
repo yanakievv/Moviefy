@@ -22,58 +22,27 @@ class DetailsViewController: UIViewController {
     @IBOutlet var overviewContentLabel: UILabel!
     @IBOutlet var posterImage: UIImageView!
     
-    @IBOutlet var favouriteImage: UIImageView!
-    @IBOutlet var toWatchImage: UIImageView!
-    @IBOutlet var watchedImage: UIImageView!
+    @IBOutlet var favouriteButton: UIButton!
+    @IBOutlet var toWatchButton: UIButton!
+    @IBOutlet var watchedButton: UIButton!
     
-    func setTapGestureRecognizers() {
-        self.favouriteImage.addTapGestureRecognizer {
-            if let movie = self.movie {
-                CoreDataManager.saveMovie(movie, markedAs: MovieSectionEndpoint.favourite)
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "RefreshCollectionView"), object: nil)
-                NSLog("*Button animation playing to inform user the button worked*")
-            }
-            else {
-                NSLog("*Button animation playing to inform user the button did NOT work*")
-            }
-        }
-        self.toWatchImage.addTapGestureRecognizer {
-            if let movie = self.movie {
-                CoreDataManager.saveMovie(movie, markedAs: MovieSectionEndpoint.toWatch)
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "RefreshCollectionView"), object: nil)
-                NSLog("*Button animation playing to inform user the button worked*")
-            }
-            else {
-                NSLog("*Button animation playing to inform user the button did NOT work*")
-            }
-        }
-        self.watchedImage.addTapGestureRecognizer {
-            if let movie = self.movie {
-                CoreDataManager.saveMovie(movie, markedAs: MovieSectionEndpoint.watched)
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "RefreshCollectionView"), object: nil)
-                NSLog("*Button animation playing to inform user the button worked*")
-            }
-            else {
-                NSLog("*Button animation playing to inform user the button did NOT work*")
-            }
-        }
-    }
+
     
     func prepareData() {
         self.navigationItem.title = self.movie?.data.title ?? "No title"
         self.movie?.loadBackdrop {
             self.backdrop = self.movie?.backdrop
-            if (self.isViewLoaded) {
                 DispatchQueue.main.async {
-                    self.backdropImage.image = self.backdrop
-                    self.backdropImage.setNeedsDisplay()
+                    if (self.isViewLoaded) {
+                        self.backdropImage.image = self.backdrop
+                        self.backdropImage.setNeedsDisplay()
+                    }
                 }
-            }
         }
         self.movie?.loadPoster {
             self.poster = self.movie?.poster
-            if (self.isViewLoaded) {
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                if (self.isViewLoaded) {
                     self.posterImage.image = self.poster
                     self.posterImage.setNeedsDisplay()
                 }
@@ -117,12 +86,32 @@ class DetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setViews()
-        self.setTapGestureRecognizers()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
     }
     
+    @IBAction func onTapFavourite(_ sender: Any) {
+        self.favouriteButton.deployScaleButtonAnimation()
+        if let movie = self.movie {
+            CoreDataManager.saveMovie(movie, markedAs: MovieSectionEndpoint.favourite)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "RefreshCollectionView"), object: nil)
+        }
+    }
+    @IBAction func onTapToWatch(_ sender: Any) {
+        self.toWatchButton.deployScaleButtonAnimation()
+        if let movie = self.movie {
+            CoreDataManager.saveMovie(movie, markedAs: MovieSectionEndpoint.toWatch)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "RefreshCollectionView"), object: nil)
+        }
+    }
+    @IBAction func onTapWatched(_ sender: Any) {
+        self.watchedButton.deployScaleButtonAnimation()
+        if let movie = self.movie {
+            CoreDataManager.saveMovie(movie, markedAs: MovieSectionEndpoint.watched)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "RefreshCollectionView"), object: nil)
+        }
+    }
     
 }

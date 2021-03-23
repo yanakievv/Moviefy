@@ -24,17 +24,22 @@ class LocalDataViewController: UIViewController {
     
     var popupShown = false
     
-    private func getHeightBySize(_ size: CGSize) -> CGFloat {
-        if (size.height < size.width) {
-            return UIScreen.main.bounds.height / 2.36
-        }
-        else {
-            return UIScreen.main.bounds.height / 4.20
-        }
+    private var tableViewFrame: CGRect {
+        return CGRect(x: self.view.frame.origin.x + self.view.frame.width - 200, y: self.tableViewHeight, width: 200, height: self.getHeightBySize(self.view.frame.size))
+        
     }
     
-    private var tableViewFrame: CGRect {
-        return CGRect(x: self.view.frame.origin.x + self.view.frame.width - 200, y: self.view.frame.origin.y, width: 200, height: self.getHeightBySize(self.view.frame.size))
+    private var tableViewHeight: CGFloat {
+        return UIApplication.shared.statusBarFrame.height + (self.navigationController?.navigationBar.frame.size.height ?? CGFloat(60))
+    }
+    
+    private func getHeightBySize(_ size: CGSize) -> CGFloat {
+        if (size.height < size.width) {
+            return UIScreen.main.bounds.height / 2.3
+        }
+        else {
+            return UIScreen.main.bounds.height / 5.2
+        }
     }
     
     private func addTransparentView() {
@@ -45,7 +50,9 @@ class LocalDataViewController: UIViewController {
             NSLayoutConstraint(item: transparentView, attribute: $0, relatedBy: .equal, toItem: view.superview, attribute: $0, multiplier: 1, constant: 0)
         })
 
-        self.categoriesTableView.frame = CGRect(x: self.view.frame.origin.x + self.view.frame.width - 200, y: self.view.frame.origin.y, width: 200, height: 0)
+        
+        self.categoriesTableView.frame = CGRect(x: self.view.frame.origin.x + self.view.frame.width - 200, y: self.tableViewHeight, width: 200, height: 0)
+        self.categoriesTableView.isScrollEnabled = false
         self.view.addSubview(self.categoriesTableView)
         self.categoriesTableView.layer.cornerRadius = 5
         
@@ -63,16 +70,16 @@ class LocalDataViewController: UIViewController {
     @objc func removeTransparentView() {
         UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseOut, animations: {
             self.transparentView.alpha = 0.0
-            self.categoriesTableView.frame = CGRect(x: self.view.frame.origin.x + self.view.frame.width - 200, y: self.view.frame.origin.y, width: 200, height: 0)
+            self.categoriesTableView.frame = CGRect(x: self.view.frame.origin.x + self.view.frame.width - 200, y: self.tableViewHeight, width: 200, height: 0)
             self.popupShown = false
         }, completion: nil)
     }
     
     @objc func changeCategory(_ notification: NSNotification) {
         if let target = notification.userInfo?["indexPath"] as? IndexPath {
-            self.collectionViewDataSource.fetchData(fromSection: MovieSectionEndpoint.allCases[target.row])
+            self.collectionViewDataSource.fetchData(fromSection: (target.row == 0) ? nil : MovieSectionEndpoint.allCases[target.row - 1])
             self.collectionView.reloadData()
-            self.category = MovieSectionEndpoint.allCases[target.row].rawValue
+            self.category = (target.row == 0) ? "All" : MovieSectionEndpoint.allCases[target.row - 1].rawValue
             self.categoryLabel.text = self.category
             self.removeTransparentView()
         }

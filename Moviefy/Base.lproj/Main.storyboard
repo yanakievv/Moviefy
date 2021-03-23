@@ -175,54 +175,69 @@
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="2I6-qS-EjI">
                                                 <rect key="frame" x="0.0" y="535.33333333333348" width="414" height="834.66666666666652"/>
                                             </imageView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="to-watch_24dp" translatesAutoresizingMaskIntoConstraints="NO" id="cKe-PR-h4D">
-                                                <rect key="frame" x="183" y="472" width="49" height="48"/>
-                                            </imageView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="favourite_24dp" translatesAutoresizingMaskIntoConstraints="NO" id="veR-IW-beY">
-                                                <rect key="frame" x="57" y="472" width="49" height="48"/>
-                                            </imageView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="watched_24dp" translatesAutoresizingMaskIntoConstraints="NO" id="TlO-xt-gqx">
-                                                <rect key="frame" x="309" y="472" width="47" height="48"/>
-                                            </imageView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dEL-DI-c3G">
+                                                <rect key="frame" x="155.66666666666666" y="494" width="102.99999999999997" height="24"/>
+                                                <state key="normal" title="To-Watch" image="to-watch_24dp">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="onTapToWatch:" destination="Ydt-pD-6c2" eventType="touchUpInside" id="Gl3-mP-H7e"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5ex-Dw-bw0">
+                                                <rect key="frame" x="32" y="494" width="98" height="24"/>
+                                                <state key="normal" title="Favourite" image="favourite_24dp">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="onTapFavourite:" destination="Ydt-pD-6c2" eventType="touchUpInside" id="2St-Ti-aCg"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GmX-D7-LHx">
+                                                <rect key="frame" x="283" y="494" width="96" height="24"/>
+                                                <state key="normal" title="Watched" image="watched_24dp">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="onTapWatched:" destination="Ydt-pD-6c2" eventType="touchUpInside" id="c5p-lu-gaF"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="XQ1-pz-te5" firstAttribute="top" secondItem="tVN-Mi-mjn" secondAttribute="bottom" constant="8" id="0SY-Ew-rfD"/>
-                                            <constraint firstItem="veR-IW-beY" firstAttribute="leading" secondItem="JN4-FU-pbL" secondAttribute="leading" constant="57" id="1OQ-6o-hU8"/>
+                                            <constraint firstItem="dEL-DI-c3G" firstAttribute="top" secondItem="kD3-bT-x3M" secondAttribute="bottom" constant="58.666666666666686" id="3Tx-Ka-Jj9"/>
                                             <constraint firstItem="tVN-Mi-mjn" firstAttribute="leading" secondItem="XQ1-pz-te5" secondAttribute="leading" id="3yK-2w-1Oq"/>
                                             <constraint firstItem="2I6-qS-EjI" firstAttribute="top" secondItem="kD3-bT-x3M" secondAttribute="bottom" constant="100.00000000000017" id="42P-BL-KiZ"/>
-                                            <constraint firstItem="TlO-xt-gqx" firstAttribute="leading" secondItem="cKe-PR-h4D" secondAttribute="trailing" constant="77" id="5hh-57-UR1"/>
                                             <constraint firstAttribute="trailing" secondItem="Ir3-3V-Z6b" secondAttribute="trailing" constant="8" id="6hp-cQ-lDX"/>
                                             <constraint firstAttribute="trailing" secondItem="kD3-bT-x3M" secondAttribute="trailing" priority="749" constant="10" id="6rU-S7-gbS"/>
-                                            <constraint firstItem="veR-IW-beY" firstAttribute="top" secondItem="kD3-bT-x3M" secondAttribute="bottom" constant="36.666666666666686" id="9Ri-V8-eb8"/>
-                                            <constraint firstItem="cKe-PR-h4D" firstAttribute="top" secondItem="kD3-bT-x3M" secondAttribute="bottom" constant="36.666666666666686" id="9Xy-1g-fNC"/>
-                                            <constraint firstItem="2I6-qS-EjI" firstAttribute="top" secondItem="cKe-PR-h4D" secondAttribute="bottom" constant="15.333333333333485" id="AOb-Js-OwN"/>
+                                            <constraint firstItem="dEL-DI-c3G" firstAttribute="centerX" secondItem="JN4-FU-pbL" secondAttribute="centerX" id="B9D-Qz-hUj"/>
                                             <constraint firstItem="D81-8c-Iwe" firstAttribute="top" secondItem="Ir3-3V-Z6b" secondAttribute="bottom" constant="16" id="Clj-so-nHk"/>
                                             <constraint firstAttribute="trailing" secondItem="D81-8c-Iwe" secondAttribute="trailing" constant="8" id="CsE-7w-PkF"/>
                                             <constraint firstItem="tVN-Mi-mjn" firstAttribute="width" secondItem="JN4-FU-pbL" secondAttribute="width" id="Fp9-DA-mLV"/>
                                             <constraint firstItem="8yj-a8-lZf" firstAttribute="top" secondItem="sJa-KV-GfB" secondAttribute="bottom" constant="48" id="GeT-4n-3cG"/>
-                                            <constraint firstItem="2I6-qS-EjI" firstAttribute="top" secondItem="veR-IW-beY" secondAttribute="bottom" constant="15.333333333333485" id="Ix2-dd-3jH"/>
+                                            <constraint firstItem="2I6-qS-EjI" firstAttribute="top" secondItem="dEL-DI-c3G" secondAttribute="bottom" constant="17.333333333333485" id="HwB-qC-qg5"/>
                                             <constraint firstItem="8yj-a8-lZf" firstAttribute="leading" secondItem="JN4-FU-pbL" secondAttribute="leading" constant="8" id="Ll6-O3-vil"/>
                                             <constraint firstAttribute="height" constant="1400" id="OW4-Pg-0IV"/>
                                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="XQ1-pz-te5" secondAttribute="trailing" id="OmT-5f-GCg"/>
-                                            <constraint firstItem="cKe-PR-h4D" firstAttribute="leading" secondItem="JN4-FU-pbL" secondAttribute="leading" constant="183" id="Os0-h5-Tr8"/>
-                                            <constraint firstItem="cKe-PR-h4D" firstAttribute="leading" secondItem="veR-IW-beY" secondAttribute="trailing" constant="77" id="P4n-gN-wlT"/>
                                             <constraint firstItem="tVN-Mi-mjn" firstAttribute="leading" secondItem="2I6-qS-EjI" secondAttribute="leading" id="QVB-ln-PrG"/>
+                                            <constraint firstItem="5ex-Dw-bw0" firstAttribute="top" secondItem="kD3-bT-x3M" secondAttribute="bottom" constant="58.666666666666686" id="S99-xE-Mmo"/>
                                             <constraint firstItem="Ir3-3V-Z6b" firstAttribute="leading" secondItem="sJa-KV-GfB" secondAttribute="trailing" id="T7R-rW-oNS"/>
                                             <constraint firstItem="XQ1-pz-te5" firstAttribute="width" secondItem="JN4-FU-pbL" secondAttribute="width" id="TF5-Vt-wzL"/>
-                                            <constraint firstAttribute="trailing" secondItem="TlO-xt-gqx" secondAttribute="trailing" constant="58" id="TRK-U7-2fU"/>
-                                            <constraint firstItem="TlO-xt-gqx" firstAttribute="top" secondItem="kD3-bT-x3M" secondAttribute="bottom" constant="36.666666666666686" id="aQK-4u-RE7"/>
                                             <constraint firstAttribute="bottom" secondItem="2I6-qS-EjI" secondAttribute="bottom" constant="30" id="bDj-6v-Zuc"/>
                                             <constraint firstItem="2I6-qS-EjI" firstAttribute="width" secondItem="JN4-FU-pbL" secondAttribute="width" id="dFb-bc-Ole"/>
+                                            <constraint firstItem="dEL-DI-c3G" firstAttribute="leading" secondItem="5ex-Dw-bw0" secondAttribute="trailing" constant="25.666666666666657" id="dUh-uO-7dj"/>
                                             <constraint firstItem="kD3-bT-x3M" firstAttribute="top" secondItem="8yj-a8-lZf" secondAttribute="bottom" constant="32" id="dnv-pb-HyR"/>
+                                            <constraint firstItem="GmX-D7-LHx" firstAttribute="top" secondItem="kD3-bT-x3M" secondAttribute="bottom" constant="58.666666666666686" id="eX2-hC-i9p"/>
                                             <constraint firstItem="sJa-KV-GfB" firstAttribute="leading" secondItem="JN4-FU-pbL" secondAttribute="leading" constant="8" id="fTn-za-Wqx"/>
+                                            <constraint firstItem="2I6-qS-EjI" firstAttribute="top" secondItem="GmX-D7-LHx" secondAttribute="bottom" constant="17.333333333333485" id="fom-BI-Yxq"/>
                                             <constraint firstItem="Ir3-3V-Z6b" firstAttribute="top" secondItem="XQ1-pz-te5" secondAttribute="bottom" constant="16" id="fyp-Xe-84O"/>
-                                            <constraint firstItem="2I6-qS-EjI" firstAttribute="top" secondItem="TlO-xt-gqx" secondAttribute="bottom" constant="15.333333333333485" id="guw-hk-Zho"/>
                                             <constraint firstItem="tVN-Mi-mjn" firstAttribute="centerX" secondItem="8yj-a8-lZf" secondAttribute="centerX" id="hvG-BS-OY6"/>
                                             <constraint firstItem="kD3-bT-x3M" firstAttribute="leading" secondItem="JN4-FU-pbL" secondAttribute="leading" constant="10" id="iIK-37-m93"/>
                                             <constraint firstItem="sJa-KV-GfB" firstAttribute="top" secondItem="XQ1-pz-te5" secondAttribute="bottom" constant="16" id="jg2-Sa-Zww"/>
                                             <constraint firstItem="D81-8c-Iwe" firstAttribute="leading" secondItem="JN4-FU-pbL" secondAttribute="leading" id="rnz-FT-38e"/>
-                                            <constraint firstAttribute="trailing" secondItem="cKe-PR-h4D" secondAttribute="trailing" constant="182" id="xbz-ZQ-bNI"/>
+                                            <constraint firstItem="GmX-D7-LHx" firstAttribute="leading" secondItem="dEL-DI-c3G" secondAttribute="trailing" constant="24.333333333333371" id="wKf-li-tt5"/>
+                                            <constraint firstItem="2I6-qS-EjI" firstAttribute="top" secondItem="5ex-Dw-bw0" secondAttribute="bottom" constant="17.333333333333485" id="wXh-1k-IQc"/>
                                             <constraint firstAttribute="trailing" secondItem="8yj-a8-lZf" secondAttribute="trailing" constant="8" id="xkh-WL-oIs"/>
                                         </constraints>
                                     </view>
@@ -249,14 +264,14 @@
                     <connections>
                         <outlet property="backdropImage" destination="tVN-Mi-mjn" id="nc7-I4-aEi"/>
                         <outlet property="dateLabel" destination="D81-8c-Iwe" id="7fh-DX-0Yh"/>
-                        <outlet property="favouriteImage" destination="veR-IW-beY" id="TGO-lX-3wa"/>
+                        <outlet property="favouriteButton" destination="5ex-Dw-bw0" id="MT0-Ez-wYi"/>
                         <outlet property="overviewContentLabel" destination="kD3-bT-x3M" id="uNf-Tp-rKp"/>
                         <outlet property="posterImage" destination="2I6-qS-EjI" id="gSJ-we-8CM"/>
                         <outlet property="scoreLabel" destination="sJa-KV-GfB" id="Gmr-h2-ajk"/>
                         <outlet property="titleLabel" destination="XQ1-pz-te5" id="j5E-QN-YsD"/>
-                        <outlet property="toWatchImage" destination="cKe-PR-h4D" id="7XJ-Xd-qL8"/>
+                        <outlet property="toWatchButton" destination="dEL-DI-c3G" id="cvE-xY-9CZ"/>
                         <outlet property="votesLabel" destination="Ir3-3V-Z6b" id="Uqm-Dn-NHh"/>
-                        <outlet property="watchedImage" destination="TlO-xt-gqx" id="0fj-uk-DTh"/>
+                        <outlet property="watchedButton" destination="GmX-D7-LHx" id="mat-e1-yP8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BsA-xx-QJz" userLabel="First Responder" sceneMemberID="firstResponder"/>

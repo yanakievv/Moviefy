@@ -31,14 +31,12 @@ public class AtomicInteger {
     private var value = 0
     
     public func get() -> Int {
-        
         lock.wait()
         defer { lock.signal() }
         return value
     }
     
     public func set(_ newValue: Int) {
-        
         lock.wait()
         defer { lock.signal() }
         value = newValue
@@ -51,7 +49,6 @@ public class AtomicInteger {
     }
     
     public func incrementAndGet() -> Int {
-        
         lock.wait()
         defer { lock.signal() }
         value += 1
@@ -79,6 +76,17 @@ extension UIButton {
             self.setTitleColor(#colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1), for: UIControl.State.normal)
             self.isEnabled = false
         }
+    }
+    func deployScaleButtonAnimation(withDuration duration: Double = 0.1, andScale scale: CGFloat = 0.8) -> () {
+        UIView.animate(withDuration: duration,
+                       animations: {
+                        self.transform = CGAffineTransform(scaleX: scale, y: scale)
+        },
+                       completion: { _ in
+                        UIView.animate(withDuration: duration) {
+                            self.transform = CGAffineTransform.identity
+                        }
+        })
     }
 }
 
