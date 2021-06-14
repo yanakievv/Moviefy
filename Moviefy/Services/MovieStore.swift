@@ -90,7 +90,7 @@ class MovieStore: MovieService {
         }
     }
     
-    /* private Commented out for Unit testing access. */ func loadURL(url: URL, params: [String:String]? = nil, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
+    private func loadURL(url: URL, params: [String:String]? = nil, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
         guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             return
         }
